@@ -1,0 +1,25 @@
+taxa:
+  script: ../envBird/010_taxa.R
+  store: ../../../dev/out/envBird/_targets/taxa
+database:
+  script: ../envBird/020_database.R
+  store: ../../../dev/out/envBird/_targets/database
+sensitivity:
+  script: ../envBird/030_sensitivity.R
+  store: ../../../dev/out/envBird/_targets/sensitivity
+exposure:
+  script: ../envBird/040_exposure.R
+  store: ../../../dev/out/envBird/_targets/exposure
+envCleaned:
+  clean:
+    script: ../envCleaned/010_clean.R
+    store: ../../../dev/out/envCleaned/aus_imcra_prov_dissolve______0__P50Y__sa_br_dissolve/90__90__P1Y__species/clean
+  outliers:
+    script: ../envCleaned/020_outliers.R
+    store: ../../../dev/out/envCleaned/aus_imcra_prov_dissolve______0__P50Y__sa_br_dissolve/90__90__P1Y__species/outliers
+  report_prep:
+    script: ../envCleaned/040_report_prep.R
+    store: ../../../dev/out/envCleaned/aus_imcra_prov_dissolve______0__P50Y__sa_br_dissolve/90__90__P1Y__species/report_prep
+  report:
+    script: ../envCleaned/050_report.R
+    store: ../../../dev/out/envCleaned/aus_imcra_prov_dissolve______0__P50Y__sa_br_dissolve/90__90__P1Y__species/report
