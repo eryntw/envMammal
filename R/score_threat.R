@@ -167,7 +167,8 @@ score_threat <- function(table,
       timing_score   = timing_vec[threat_timing],
       scope_score    = scope_vec[threat_scope],
       severity_score = severity_vec[threat_severity],
-      threat_impact_score = timing_score + scope_score + severity_score
+      score_amean = (timing_score + scope_score + severity_score) / 3,
+      score_gmean = (timing_score*scope_score*severity_score) / 3,
     ) %>% 
     tidyr::separate(
       col  = threat_code,

@@ -47,8 +47,8 @@
 #' }
 #'
 #' @export
-get_iucn_species_data <- function(splist, 
-                                  api, 
+get_iucn_species_data <- function(splist,
+                                  api,
                                   synonym_path = "H:/dev/eryn/envSens/data/synonyms.csv") {
   
   # ---- First IUCN query ----
@@ -56,7 +56,7 @@ get_iucn_species_data <- function(splist,
     dplyr::mutate(
       result = purrr::pmap(
         list(Genus, Species),
-        ~ get_iucn_clean(api = api, ..1, ..2)
+        ~ get_iucn_clean(api, ..1, ..2)
       )
     )
   

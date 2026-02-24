@@ -22,7 +22,7 @@
 #'
 #' Unknown or missing values are scored as 0.
 
-score_redlist <- function(data, trend_col, status_col){
+score_trend_status <- function(data, trend_col, status_col){
   
   trend_col  <- rlang::ensym(trend_col)
   status_col <- rlang::ensym(status_col)
@@ -47,7 +47,7 @@ score_redlist <- function(data, trend_col, status_col){
     dplyr::mutate(
       
       # ---- population trend ----
-      pop_trend_score =
+      trend_score =
         trend_lookup[
           stringr::str_to_lower(as.character(!!trend_col))
         ] %>%
@@ -55,7 +55,7 @@ score_redlist <- function(data, trend_col, status_col){
         tidyr::replace_na(0),
       
       # ---- red list status ----
-      redlist_score =
+      status_score =
         status_lookup[
           toupper(as.character(!!status_col))
         ] %>%
@@ -63,7 +63,7 @@ score_redlist <- function(data, trend_col, status_col){
         tidyr::replace_na(0),
       
       # ---- combined ----
-      ts_combined = pop_trend_score*redlist_score
+      TrendxStatus = trend_score*status_score
       
     )
 }

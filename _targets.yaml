@@ -7,9 +7,12 @@ database:
 sensitivity:
   script: ../envBird/030_sensitivity.R
   store: ../../../dev/out/envBird/_targets/sensitivity
-exposure:
-  script: ../envBird/040_exposure.R
-  store: ../../../dev/out/envBird/_targets/exposure
+threat:
+  script: ../envBird/040_threat.R
+  store: ../../../dev/out/envBird/_targets/threat
+impute:
+  script: ../envBird/060_impute.R
+  store: ../../../dev/out/envBird/_targets/impute
 envCleaned:
   clean:
     script: ../envCleaned/010_clean.R
