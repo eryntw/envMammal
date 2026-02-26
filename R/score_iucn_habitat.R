@@ -15,9 +15,9 @@
 #'
 #' @return A data frame with one row per species, including:
 #' \itemize{
-#'   \item score_habitat_L2 – summed habitat suitability score (Level 2)
+#'   \item score_HB_L2 – summed habitat suitability score (Level 2)
 #'   \item scaledHBscore_L2 – scaled log-transformed Level 2 habitat score
-#'   \item n_habitats_L1 – number of suitable Level 1 habitats
+#'   \item HB_L1 – number of suitable Level 1 habitats
 #'   \item scaledHB_L1 – scaled Level 1 habitat breadth
 #'   \item anthro_habitat_sum – summed anthropogenic habitat score
 #'   \item anthro_LogHabitat_scaled – scaled log-transformed anthropogenic score
@@ -83,11 +83,11 @@ score_iucn_habitat <- function(
     ) %>%
     dplyr::group_by(dplyr::across(dplyr::all_of(species_cols))) %>%
     dplyr::summarise(
-      score_habitat_L2 = sum(habitat_score_row, na.rm = TRUE),
+      score_HB_L2 = sum(habitat_score_row, na.rm = TRUE),
       .groups = "drop"
     ) %>%
     dplyr::mutate(
-      logscaledHBscore_L2 = scales::rescale(log(score_habitat_L2 + 1), to = c(0, 1))
+      logscaledHBscore_L2 = scales::rescale(log(score_HB_L2 + 1), to = c(0, 1))
     )
   
   # ===============================
@@ -101,11 +101,11 @@ score_iucn_habitat <- function(
     ) %>%
     dplyr::group_by(dplyr::across(dplyr::all_of(species_cols))) %>%
     dplyr::summarise(
-      n_habitats_L1 = dplyr::n(),
+      HB_L1 = dplyr::n(),
       .groups = "drop"
     ) %>%
     dplyr::mutate(
-      scaledHB_L1 = scales::rescale(n_habitats_L1, to = c(0, 1))
+      scaledHB_L1 = scales::rescale(HB_L1, to = c(0, 1))
     )
   
   # ===============================

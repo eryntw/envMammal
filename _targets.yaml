@@ -13,6 +13,9 @@ threat:
 impute:
   script: ../envBird/060_impute.R
   store: ../../../dev/out/envBird/_targets/impute
+coin:
+  script: ../envBird/070_coin.R
+  store: ../../../dev/out/envBird/_targets/coin
 envCleaned:
   clean:
     script: ../envCleaned/010_clean.R

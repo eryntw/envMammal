@@ -48,12 +48,12 @@ tar_plan(
         aub_FeedingHB,
         aub_BreedingHB,
         bb_Hb,
-        bl_n_habitats_L1,
-        bl_score_habitat_L2,
+        bl_HB_L1,
+        bl_score_HB_L2,
         
         ## Diet ------
         bb_Db,
-        bb_db_simpson,
+        bb_Db_simpson,
         
         ## Adaptability ------
         aub_score_anthro_habitat,
@@ -65,17 +65,14 @@ tar_plan(
         bl_is_raptor, 
         
         # Migratory
-        aub_obligate_migrant,
-        bb_obligate_migrant,
-        bl_obligate_migrant,
+        contains("obligate_migrant"),
         
         # Restricted Range
         bb_Rr,
         
         # Generation length
         bl_GenerationLength
-      )
-  ),
-  
-  api = iucnredlist::init_api(Sys.getenv("IUCN_REDLIST_KEY"))
+      ) %>% 
+      dplyr::mutate(dplyr::across(where(is.numeric),~ round(.x, 2)))
+  )
 )

@@ -35,7 +35,8 @@ tar_plan(
                       clean_taxa_df(commoncol = common,
                                     taxa = scientific_name), 
                     prefix = "t_", 
-                    syn_db = syn_db)
+                    syn_db = syn_db) %>% 
+      dplyr::select(-any_of(c("t_poptrend_description", "t_scientific_name", "t_code")))
   ),
   
   ## Make table for manual filling -------

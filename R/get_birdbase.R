@@ -45,8 +45,8 @@ get_birdbase <- function(birdbase, subset = FALSE) {
     # ---- bind diversity indices ----
     dplyr::bind_cols(
       calc_diversity(., db_cols) |>
-        dplyr::rename(db_shannon = shannon,
-                      db_simpson = simpson)
+        dplyr::rename(Db_shannon = shannon,
+                      Db_simpson = simpson)
     )
   
   # ---- Step 2: OPTIONAL subsetting ----
@@ -58,7 +58,7 @@ get_birdbase <- function(birdbase, subset = FALSE) {
         PrimaryDiet, Db, Hb, Rr, ElevationalRange, Mig, Alt,
         dplyr::all_of(db_cols),
         dplyr::all_of(hb_cols),
-        mig_score, db_shannon, db_simpson
+        mig_score, Db_shannon, Db_simpson
       )
   }
   
