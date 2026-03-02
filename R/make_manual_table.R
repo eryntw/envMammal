@@ -36,7 +36,7 @@ make_manual_table <- function(df_new, dir, save_previous = FALSE) {
       names_to = "trait",
       values_to = "value"
     ) %>%
-    dplyr::filter(is.na(value) | value %in% c("-999", "NAV")) %>%
+    dplyr::filter(is.na(value) | value %in% c("-999", "NAV", "NaN")) %>%
     dplyr::distinct()
   
   # --- 2. Path to processed manual table ---

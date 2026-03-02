@@ -71,7 +71,7 @@ tar_plan(
   
   ## Add Fire as Threat data ------
   
-  threat_fire = summarise_threat_L1(df = scored_threat,
+  threat_fire = summarise_threat_L1(df = scored_threat, # 7_1_2 absent in bird subset
                                     lv1_filter = 7,
                                     lv2_filter = 1,
                                     agg_method = "max"
@@ -97,9 +97,9 @@ tar_plan(
   
   ## Read manually processed mtable -------
   
-  tar_file_read(name = processed_mtable,
-                command = "data/current_mtable.csv",
-                read = readr::read_csv(!!.x, col_types = readr::cols())
+  tarchetypes::tar_file_read(name = processed_mtable,
+                             command = "data/current_mtable.csv",
+                             read = readr::read_csv(!!.x, col_types = readr::cols())
   ),
   
   ## impute -------
@@ -111,5 +111,38 @@ tar_plan(
                                   Atype = "long")
   ),
   
-  ## organise exposure traits ------
+  ## Map exposure with traits ------
+  
+  mapped_exposure = map_exposure_cols(exposure_imputed) %>% 
+    dplyr::select(search_term, common, starts_with("exp_")),
+  
+  
+  ## Read stressor matrix ------
+  
+  threat_cols = c("HabitatLoss",
+                  "Invasive_cat",
+                  "Invasive_rabbitgoat",
+                  "Fragmentation",
+                  "IncreasedFire",
+                  "CollisionSolar",
+                  "CollisionWind"),
+  
+  tarchetypes::tar_file_read(name = stressor_matrix,
+                             command = "notes/ExposureTraits_Birds.xlsx",
+                             read = readxl::read_excel(path = !!.x, 
+                                                       sheet = "StressorTraitMapping",
+                                                       col_types = "guess") %>%
+                               rescale_exposure_matrix(threat_cols = threat_cols)
+  ),
+  
+  ## Combine mapped exposure and stressor matrix and calculate the exposure for each threat ------
+  
+  exposure_indicator = calculate_exposure_matrix(mapped_exposure,
+                                              stressor_matrix,
+                                              threat_cols) %>% 
+    dplyr::left_join(mapped_exposure %>% 
+                       dplyr::select(search_term, common),
+                     by = "search_term")
+  
+  
 )

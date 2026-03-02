@@ -26,7 +26,7 @@ map_traits <- function(A,
                        B,
                        x = "scientific_name",
                        overwrite = FALSE,
-                       is_missing = c("", " ", "NA", "N/A", NA),
+                       is_missing = c("", " ", "NA", "N/A", NA, "NaN"),
                        Atype = "long") {
   
   # -----------------------------
@@ -35,7 +35,8 @@ map_traits <- function(A,
   
   # Pivot A from long format
   if (!is.null(Atype) && Atype == "long") {
-    A <- tidyr::pivot_wider(A, names_from = "trait", values_from = "value") %>% 
+    A <- A %>% dplyr::select(-data_from) %>% 
+      tidyr::pivot_wider(names_from = "trait", values_from = "value") %>% 
       readr::type_convert()
   }
   
@@ -62,13 +63,16 @@ map_traits <- function(A,
   # -----------------------------
   for(col in map_cols){
     
-    if(is.numeric(A[[col]])){
-      B[[col]] <- suppressWarnings(as.numeric(B[[col]]))
+    if(is.numeric(B[[col]])){
+      # Convert A column to numeric
+      A[[col]] <- suppressWarnings(as.numeric(A[[col]]))
+    } else if(is.character(B[[col]])){
+      # Convert A column to character
+      A[[col]] <- as.character(A[[col]])
+    } else if(is.logical(B[[col]])){
+      A[[col]] <- as.logical(A[[col]])
     }
     
-    if(is.character(A[[col]])){
-      B[[col]] <- as.character(B[[col]])
-    }
   }
   
   # -----------------------------

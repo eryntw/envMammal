@@ -15,9 +15,9 @@
 #' @export
 
 summarise_threat_L1 <- function(df,
-                                    lv1_filter,
-                                    lv2_filter = NULL,
-                                    agg_method = c("max", "mean", "sum")) {
+                                lv1_filter,
+                                lv2_filter = NULL,
+                                agg_method = c("max", "mean", "sum")) {
   
   # ---- Validate aggregation method ----
   agg_method <- rlang::arg_match(agg_method)
