@@ -16,10 +16,12 @@ get_ausbird <- function(ausbird, subset = FALSE) {
   breeding_cols <- grep("BreedingHabitat", names(ausbird), value = TRUE)
   feeding_cols  <- grep("FeedingHabitat",  names(ausbird), value = TRUE)
   
-  # ---- replace NA with 0 (absence) ----
+  # ---- replace NA with 0 (migratory birds) ----
   ausbird_proc <- ausbird %>%
     dplyr::mutate(
-      dplyr::across(dplyr::all_of(c(breeding_cols, feeding_cols)),
+      dplyr::across(dplyr::all_of(c(breeding_cols, 
+                                    feeding_cols, 
+                                    "NonBreedingOnly4")),
                     ~ tidyr::replace_na(., 0))
     )
 

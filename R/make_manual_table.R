@@ -48,13 +48,14 @@ make_manual_table <- function(df_new, dir, save_previous = FALSE) {
     message("No existing mtable found. Creating new table.")
   } else {
     # --- 3.1 Read existing table ---
-    processed <- readr::read_csv(mtable_path, col_types = readr::cols())
+    processed <- readr::read_csv(mtable_path) %>% 
+      dplyr::mutate(value = as.character(value))
     
     # --- 3.2 Identify new rows to add ---
     new_rows <- tbl %>%
       dplyr::select(-value) %>%
       dplyr::anti_join(processed %>% dplyr::select(-value), by = c("search_term", "trait")) %>%
-      dplyr::mutate(value = NA)
+      dplyr::mutate(value = NA_character_)
     
     # --- 4. Combine existing and new rows ---
     csv <- dplyr::bind_rows(processed, new_rows)

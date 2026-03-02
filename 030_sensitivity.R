@@ -74,5 +74,29 @@ tar_plan(
         bl_GenerationLength
       ) %>% 
       dplyr::mutate(dplyr::across(where(is.numeric),~ round(.x, 2)))
-  )
+  ),
+  
+  ## Append NA to the manually imputed table -------
+  
+  tar_target(
+    name = impute_sensitivity,
+    command = make_manual_table(sensitivity, dir = "data")
+  ),
+  
+  ## Read manually processed mtable -------
+  
+  tar_file_read(name = processed_mtable,
+                command = "data/current_mtable.csv",
+                read = readr::read_csv(!!.x, col_types = readr::cols())
+  ),
+  
+  ## impute -------
+  
+  tar_target(name = sensitivity_imputed,
+             command = map_traits(A = processed_mtable, 
+                                  B = sensitivity,
+                                  x = "search_term", 
+                                  Atype = "long")
+  ),
+  
 )

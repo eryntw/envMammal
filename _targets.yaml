@@ -10,12 +10,9 @@ sensitivity:
 threat:
   script: ../envBird/040_threat.R
   store: ../../../dev/out/envBird/_targets/threat
-impute:
-  script: ../envBird/060_impute.R
-  store: ../../../dev/out/envBird/_targets/impute
-coin:
-  script: ../envBird/070_coin.R
-  store: ../../../dev/out/envBird/_targets/coin
+exposure:
+  script: ../envBird/050_exposure.R
+  store: ../../../dev/out/envBird/_targets/exposure
 envCleaned:
   clean:
     script: ../envCleaned/010_clean.R

@@ -51,7 +51,7 @@
 build_iMeta <- function(iData,
                         groups,
                         index_name = "index",
-                        negative_indicators = NULL) {
+                        negative_patterns = NULL) {
   
   # -----------------------------
   # 1. Extract indicator codes
@@ -111,23 +111,16 @@ build_iMeta <- function(iData,
   # 3. Apply negative direction
   # -----------------------------
   
-  if (!base::is.null(negative_indicators)) {
+  if (!base::is.null(negative_patterns)) {
     
-    invalid_neg <- base::setdiff(
-      negative_indicators,
-      L1$iCode
-    )
-    
-    if (base::length(invalid_neg) > 0) {
-      base::stop(
-        base::paste(
-          "Negative indicators not found among Level 1 indicators:",
-          base::paste(invalid_neg, collapse = ", ")
-        )
+    neg_from_pattern <- L1$iCode[
+      stringr::str_detect(
+        L1$iCode,
+        base::paste(negative_patterns, collapse = "|")
       )
-    }
+    ]
     
-    L1$Direction[L1$iCode %in% negative_indicators] <- -1
+    L1$Direction[L1$iCode %in% neg_from_pattern] <- -1
   }
   
   # -----------------------------

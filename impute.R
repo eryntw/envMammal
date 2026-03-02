@@ -21,6 +21,7 @@ tar_source()
 
 sensitivity <- tar_read(sensitivity, store = tars$sensitivity$store)
 threats <- tar_read(threats, store = tars$threat$store)
+exposure <- tar_read(exposure, store = tars$exposure$store)
 syn_db <- tar_read(syn_db, store = tars$database$store)
 
 tar_plan(
@@ -41,7 +42,7 @@ tar_plan(
   
   ## Make table for manual filling -------
   tar_target(
-    name = mtable,
+    name = impute_table,
     command = make_manual_table(info_table, dir = "data")
   )
   

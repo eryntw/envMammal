@@ -49,6 +49,19 @@ tar_plan(
                                get_birdbase(subset = FALSE) # ATTENTION
   ),
   
+  ## BirdBase Nest binary ------
+  
+  tarchetypes::tar_file_read(name = bb_nest,
+                             command = "database/BIRDBASE v2025.1 Sekercioglu et al. Final.xlsx",
+                             read = readxl::read_excel(path = !!.x, 
+                                                       sheet = "Nest Details",
+                                                       col_types = "guess") %>% 
+                               janitor::clean_names(case = "upper_camel") %>% 
+                               clean_taxa_df(commoncol = EnglishName,
+                                             taxacol = LatinName) %>% 
+                               dplyr::select(-Ioc15_1)
+  ),
+  
   ## Birdlife Generation Length 2025 ------
   
   tarchetypes::tar_file_read(name = genlength,
@@ -88,7 +101,7 @@ tar_plan(
                                              taxa = ScientificName)
   ),
   
-  ## Australian Birds 2015
+  ## Australian Birds 2015 ------
   
   tar_target(name = ausbird,
              command = traitdata::australian_birds %>%
@@ -99,6 +112,41 @@ tar_plan(
                filter(is.na(SubspeciesName2)) %>%  # Most subspecies have no data
                get_ausbird(subset = FALSE)
   ),
+  
+  ## AVONET 2021 ------
+  
+  tar_target(name = avonet, 
+             command = traitdata::avonet %>% 
+               dplyr::filter(Age == 0) %>% 
+               janitor::clean_names(case = "upper_camel") %>% 
+               dplyr::group_by(Genus, Species) %>%
+               dplyr::summarise(dplyr::across(dplyr::where(is.numeric),
+                                              list(
+                                                mean = ~ mean(.x, na.rm = TRUE),
+                                                median = ~ median(.x, na.rm = TRUE)
+                                              ),
+                                              .names = "{.col}_{.fn}"
+               ),
+               .groups = "drop") %>% 
+               dplyr::filter(!(base::is.na(Genus) & base::is.na(Species))) %>% 
+               dplyr::mutate(dplyr::across(where(is.numeric),~ round(.x, 2)))
+  ),
+  
+  ## Elton Birds 2014 ------
+  
+  tar_target(name = elt_birds, 
+             command =  traitdata::elton_birds %>% 
+               dplyr::distinct() %>% 
+               janitor::clean_names(case = "upper_camel") %>% 
+               clean_taxa_df(commoncol = English)
+  ),
+  
+  ## Bird Behaviour 2019 ------
+  
+  tar_target(name = bird_behav, 
+             command = traitdata::bird_behav %>% distinct()
+  ),
+  
   
   ## Match database species -------
   
@@ -112,14 +160,17 @@ tar_plan(
              command = sa_birds %>%
                join_database_(summary_df, prefix = "rec_", syn_db = syn_db) %>%  
                join_database_(birdbase, prefix = "bb_", syn_db = syn_db) %>%
+               join_database_(bb_nest, prefix = "bbn_", syn_db = syn_db) %>% 
                join_database_(genlength, prefix = "bl_", syn_db = syn_db) %>%
                join_database_(birdlife_attr %>% dplyr::select(-ScientificName), 
                               prefix = "bl_", syn_db = syn_db) %>%
                join_database_(birdlife_hab %>% dplyr::select(-ScientificName), 
                               prefix = "bl_", syn_db = syn_db) %>%
-               join_database_(ausbird, prefix = "aub_", syn_db = syn_db)
-             
-             # NA is migratory birds
+               join_database_(ausbird, prefix = "aub_", syn_db = syn_db) %>% 
+               join_database_(bird_behav, prefix = "bhv_", syn_db = syn_db) %>% 
+               join_database_(avonet, prefix = "avo_", syn_db = syn_db) %>% 
+               join_database_(elt_birds, prefix = "elt_", syn_db = syn_db)
+
   ),
   
   ## join database: pilot areas -------

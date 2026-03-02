@@ -22,32 +22,35 @@ get_birdbase <- function(birdbase, subset = FALSE) {
   birdbase_proc <- birdbase %>%
     
     # ---- Fix T ----
-    dplyr::mutate(
-      dplyr::across(dplyr::where(is.character), ~ dplyr::na_if(., "T"))
-    ) %>%
-    # ---- Fix NA in habitat cols ----
-    dplyr::mutate(
-      dplyr::across(dplyr::all_of(hb_cols), ~ tidyr::replace_na(., 0))
-    ) %>%
+  dplyr::mutate(
+    dplyr::across(dplyr::where(is.character), ~ dplyr::na_if(., "T"))
+  ) %>%
+    readr::type_convert() %>%
+    
+    # ---- Fix NA in habitat and diet cols ----
+  dplyr::mutate(
+    dplyr::across(dplyr::all_of(c(hb_cols, db_cols)), ~ tidyr::replace_na(., 0))
+  ) %>%
+    
     # ---- Score migration ----
-    dplyr::mutate(
-      obligate_migrant = dplyr::case_when(
-        Mig == 1 ~ 1,   # full migrant
-        TRUE     ~ 0
-      )
-    ) %>%
+  dplyr::mutate(
+    obligate_migrant = dplyr::case_when(
+      Mig == 1 ~ 1,   # full migrant
+      TRUE     ~ 0
+    )
+  ) %>%
     # ---- character/numeric/integer ----
-    readr::type_convert() %>% 
+  readr::type_convert() %>% 
     
     # ---- force numeric ----
-    mutate(across(contains("bb_Norm"), readr::parse_number)) %>% 
+  mutate(across(contains("bb_Norm"), readr::parse_number)) %>% 
     
     # ---- bind diversity indices ----
-    dplyr::bind_cols(
-      calc_diversity(., db_cols) |>
-        dplyr::rename(Db_shannon = shannon,
-                      Db_simpson = simpson)
-    )
+  dplyr::bind_cols(
+    calc_diversity(., db_cols) |>
+      dplyr::rename(Db_shannon = shannon,
+                    Db_simpson = simpson)
+  )
   
   # ---- Step 2: OPTIONAL subsetting ----
   if (subset) {
