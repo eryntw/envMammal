@@ -11,7 +11,7 @@
 
 ## This function calculates simpson and shannon biodiversity index for diet and habitat breadth
 
-calc_diversity <- function(df, cols) {
+calculate_diversity_index <- function(df, cols) {
   
   calc_df <- df %>%
     dplyr::mutate(across(where(is.integer), ~ as.numeric(.))) %>% 

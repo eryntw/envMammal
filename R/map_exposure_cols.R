@@ -29,6 +29,11 @@ map_exposure_cols <- function(df) {
         .names = "exp_{.col}"
       ),
       
+      ## ---- Migratory ----
+      exp_longdistmig = if_else(bb_Mig == 1, 1, 0),
+      exp_partmig = if_else(bb_Mig == 2, 1, 0),
+      exp_othermig = if_else(bb_Mig == 0, 1, 0),
+      
       ## ---- Nesting structure ----
       exp_Open = if_else(rowSums(dplyr::across(dplyr::matches("bbn_NestType(Cp|Hc|No|O|Pl|Sa|Sc)"))) > 0, 1, 0),
       exp_Cavity = if_else(rowSums(dplyr::across(dplyr::matches("bbn_NestType(Bu|Cr|Cv)"))) > 0, 1, 0),

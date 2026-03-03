@@ -34,8 +34,6 @@ tar_plan(
         search_term, common, # Names
         
         ## Climate ------
-        bb_NormMin,
-        bb_NormMax,
         bb_ElevationalRange,
         bl_RlEooSmallerOfBreedingAndNonBreedingEoo,
         rec_stern_dehoedt_2000_minor_simpson,

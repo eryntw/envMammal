@@ -37,7 +37,8 @@ get_birdbase <- function(birdbase, subset = FALSE) {
     obligate_migrant = dplyr::case_when(
       Mig == 1 ~ 1,   # full migrant
       TRUE     ~ 0
-    )
+    ),
+    Mig = tidyr::replace_na(Mig, 0)
   ) %>%
     # ---- character/numeric/integer ----
   readr::type_convert() %>% 
@@ -47,7 +48,7 @@ get_birdbase <- function(birdbase, subset = FALSE) {
     
     # ---- bind diversity indices ----
   dplyr::bind_cols(
-    calc_diversity(., db_cols) |>
+    calculate_diversity_index(., db_cols) |>
       dplyr::rename(Db_shannon = shannon,
                     Db_simpson = simpson)
   )

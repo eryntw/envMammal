@@ -45,6 +45,9 @@ tar_plan(
                           dplyr::matches("^elt_ForStrat(?!Source|SpecLevel|EnteredBy)", perl = TRUE),
                           elt_PelagicSpecialist,
                           
+                          # Migratory ----
+                          bb_Mig,
+                          
                           # Territoriality ----
                           bhv_Territoriality,
                           
@@ -132,17 +135,22 @@ tar_plan(
                              read = readxl::read_excel(path = !!.x, 
                                                        sheet = "StressorTraitMapping",
                                                        col_types = "guess") %>%
-                               rescale_exposure_matrix(threat_cols = threat_cols)
+                               rescale_exposure_matrix(threat_cols = threat_cols) %>% 
+                               dplyr::mutate(
+                                 Category = to_upper_camel(Category)
+                               )
   ),
   
-  ## Combine mapped exposure and stressor matrix and calculate the exposure for each threat ------
+  ## Combine mapped exposure and stressor matrix ------
   
-  exposure_indicator = calculate_exposure_matrix(mapped_exposure,
+  exposure_indicator = calculate_category_exposure(mapped_exposure,
+                                                   stressor_matrix,
+                                                   threat_cols),
+  
+  exposure_matrix = calculate_exposure_matrix(mapped_exposure,
                                               stressor_matrix,
                                               threat_cols) %>% 
-    dplyr::left_join(mapped_exposure %>% 
-                       dplyr::select(search_term, common),
-                     by = "search_term")
-  
+    dplyr::left_join(mapped_exposure[,c("search_term", "common")],
+                     by = "search_term") # check mapped_exposure to validate
   
 )

@@ -13,6 +13,12 @@ threat:
 exposure:
   script: ../envBird/050_exposure.R
   store: ../../../dev/out/envBird/_targets/exposure
+coin:
+  script: ../envBird/060_coin.R
+  store: ../../../dev/out/envBird/_targets/coin
+birdcoin:
+  script: ../envBird/080_birdcoin.R
+  store: ../../../dev/out/envBird/_targets/birdcoin
 envCleaned:
   clean:
     script: ../envCleaned/010_clean.R
