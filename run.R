@@ -7,7 +7,7 @@ envFunc::check_packages(yaml::read_yaml("settings/packages.yaml") |> unlist() |>
 )
 
 # tars --------
-## local ------
+
 store_base <- envFunc::get_env_dir() |>
   fs::path_rel() |>
   fs::path(if(grepl("\\/prod\\/", here::here())) "prod" else "dev"
@@ -20,15 +20,19 @@ tars_local <- envTargets::make_tars(settings = envFunc::extract_scale("envBird")
                                     , list_names = "store"
 )
 
-tars <- c(tars_local
-          ## envCleaned --------
-          , envTargets::make_tars(settings = envFunc::extract_scale(element = "envCleaned")
-                                  , project_base = fs::path("..", "envCleaned")
+tars_pia <- envTargets::make_tars(settings = envFunc::extract_scale("envPIA")
+                                  , project_base = fs::path("..", "envPIA")
                                   , store_base = store_base
                                   , local = FALSE
-          )
 )
 
+tars_cleaned <- envTargets::make_tars(settings = envFunc::extract_scale(element = "envCleaned")
+                                      , project_base = fs::path("..", "envCleaned")
+                                      , store_base = store_base
+                                      , local = FALSE
+)
+
+tars <- c(tars_local, tars_cleaned, tars_pia)
 envTargets::write_tars(tars)
 
 

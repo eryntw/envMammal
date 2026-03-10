@@ -65,14 +65,11 @@ tar_plan(
                           bb_Db)
   ),
   
-  ## Add Invasives as Threat data ------
+  ## Add invasive herbivores | predators as threat data ------
   
-  threat_inv = summarise_threat_L1(df = scored_threat,
-                                   lv1_filter = 8,
-                                   agg_method = "max"
-  ),
+  threat_inv = summarise_ias_pressure(scored_threat, agg_method = "max"),
   
-  ## Add Fire as Threat data ------
+  ## Add increasing fire as threat data ------
   
   threat_fire = summarise_threat_L1(df = scored_threat, # 7_1_2 absent in bird subset
                                     lv1_filter = 7,
@@ -122,20 +119,20 @@ tar_plan(
   
   ## Read stressor matrix ------
   
-  threat_cols = c("HabitatLoss",
-                  "Invasive_cat",
-                  "Invasive_rabbitgoat",
-                  "Fragmentation",
-                  "IncreasedFire",
-                  "CollisionSolar",
-                  "CollisionWind"),
+  exp_cols = c("HabitatLoss",
+               "iasCat",
+               "iasRabbitGoat",
+               "Fragmentation",
+               "IncreasedFire",
+               "CollisionSolar",
+               "CollisionWind"),
   
   tarchetypes::tar_file_read(name = stressor_matrix,
                              command = "notes/ExposureTraits_Birds.xlsx",
                              read = readxl::read_excel(path = !!.x, 
                                                        sheet = "StressorTraitMapping",
                                                        col_types = "guess") %>%
-                               rescale_exposure_matrix(threat_cols = threat_cols) %>% 
+                               rescale_exposure_matrix(threat_cols = exp_cols) %>% 
                                dplyr::mutate(
                                  Category = to_upper_camel(Category)
                                )
@@ -145,11 +142,12 @@ tar_plan(
   
   exposure_indicator = calculate_category_exposure(mapped_exposure,
                                                    stressor_matrix,
-                                                   threat_cols),
+                                                   exp_cols) %>% 
+    dplyr::select(where(~ dplyr::n_distinct(.x, na.rm = FALSE) > 1)), # remove useless cols
   
   exposure_matrix = calculate_exposure_matrix(mapped_exposure,
                                               stressor_matrix,
-                                              threat_cols) %>% 
+                                              exp_cols) %>% 
     dplyr::left_join(mapped_exposure[,c("search_term", "common")],
                      by = "search_term") # check mapped_exposure to validate
   

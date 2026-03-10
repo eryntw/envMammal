@@ -1,32 +1,18 @@
 #' Replace Taxa Names Using a Lookup Table
 #'
-#' Standardises taxonomic names in a data frame by replacing values
-#' in a specified taxa column using a predefined lookup table.
-#' Any taxa not found in the lookup table are left unchanged.
+#' Standardises taxonomic names in either a data frame column or a character
+#' vector/list using a predefined lookup table.
 #'
-#' @param df A data frame containing a taxonomic column to be standardised.
-#' @param taxa_col Character. Name of the column in \code{df} containing taxa
-#'   names to be checked and replaced (default: "search_term").
+#' @param x A data frame, character vector, or list containing taxa names.
+#' @param taxa_col Character. Column name if `x` is a data frame.
+#' @param direction Character. Lookup direction:
+#'   "forward" = names → values -->,
+#'   "reverse" = values → names <--.
 #'
-#' @return The original data frame with updated taxonomic names in
-#'   \code{taxa_col}.
+#' @return Updated object with replaced taxa names.
 #'
-#' @details
-#' This function uses an internal named character vector as a lookup table,
-#' where names represent original taxa names and values represent the
-#' standardised replacements.
-#'
-#' Only exact matches are replaced. Taxa not listed in the lookup
-#' table remain unchanged.
-#'
-#' @examples
-#' df <- data.frame(search_term = c("Ardea intermedia", "Ardea alba"))
-#'
-#' replace_taxa(df)
-#'
-#' @importFrom dplyr if_else
 #' @export
-replace_taxa <- function(df, taxa_col = "search_term") {
+replace_taxa <- function(x, taxa_col = NULL, direction = "forward") {
   
   # ===============================
   # Taxa replacement lookup table
@@ -37,25 +23,47 @@ replace_taxa <- function(df, taxa_col = "search_term") {
   )
   
   # ===============================
-  # Input validation
+  # Reverse lookup if requested
   # ===============================
   
-  stopifnot(
-    is.data.frame(df),
-    taxa_col %in% names(df),
-    is.character(lookup),
-    !is.null(names(lookup))
-  )
+  if (direction == "reverse") {
+    lookup <- setNames(names(lookup), lookup)
+  }
   
   # ===============================
-  # Replace taxa names
+  # Replacement function
   # ===============================
   
-  df[[taxa_col]] <- dplyr::if_else(
-    df[[taxa_col]] %in% names(lookup),
-    lookup[df[[taxa_col]]],
-    df[[taxa_col]]
-  )
+  replace_vec <- function(vec) {
+    vec[vec %in% names(lookup)] <- lookup[vec[vec %in% names(lookup)]]
+    vec
+  }
   
-  df
+  # ===============================
+  # Apply to data frame
+  # ===============================
+  
+  if (is.data.frame(x)) {
+    
+    if (is.null(taxa_col) || !(taxa_col %in% names(x))) {
+      stop("taxa_col must be provided for data frames.")
+    }
+    
+    x[[taxa_col]] <- replace_vec(x[[taxa_col]])
+    return(x)
+  }
+  
+  # ===============================
+  # Apply to vector or list
+  # ===============================
+  
+  if (is.character(x)) {
+    return(replace_vec(x))
+  }
+  
+  if (is.list(x)) {
+    return(replace_vec(unlist(x)))
+  }
+  
+  stop("Input must be a data frame, character vector, or list.")
 }

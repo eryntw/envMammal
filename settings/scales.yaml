@@ -19,3 +19,23 @@ envCleaned:
     grain_y: 90
     grain_time: "P1Y" # must be either P1M or P1Y (used to set contexts)
     taxonomic: "species"
+################################
+envPIA:
+  extent:
+    vector: "aus_imcra_prov_dissolve"
+    filt_col: NULL
+    filt_level: NULL
+    buffer: 0
+    extent_time: "P50Y" # must be a period of years
+    extent_taxa: "sa_br_dissolve"
+  grain:
+    grain_x: 90
+    grain_y: 90
+    grain_time: "P1Y" # must be either P1M or P1Y (used to set contexts)
+    taxonomic: "species"
+  aoi:
+    aoi_vector: "pia"
+    aoi_filt_col: "boundary"
+    aoi_filt_level: 1
+    vec_buffer: 0 #used in make_aoi
+    aoi_buffer: 50000 # buffer around aoi (aoi_buf) used to find aoi-taxa

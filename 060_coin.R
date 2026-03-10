@@ -22,7 +22,7 @@ tar_source()
 sensitivity_imputed <- tar_read(sensitivity_imputed, store = tars$sensitivity$store)
 threats <- tar_read(threats, store = tars$threat$store)
 exposure_indicator <- tar_read(exposure_indicator, store = tars$exposure$store)
-exposurethreat_prefix <- tar_read(threat_cols, store = tars$exposure$store)
+exposurethreat_prefix <- tar_read(exp_cols, store = tars$exposure$store)
 syn_db <- tar_read(syn_db, store = tars$database$store)
 
 tar_plan(

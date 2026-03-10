@@ -49,7 +49,7 @@
 #' @export
 get_iucn_species_data <- function(splist,
                                   api,
-                                  synonym_path = "H:/dev/eryn/envSens/data/synonyms.csv") {
+                                  synonym_path = "data/synonyms.csv") {
   
   # ---- First IUCN query ----
   results <- splist %>%

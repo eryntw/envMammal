@@ -16,7 +16,7 @@ tar_source()
 
 # targets -------
 
-targets <- list (
+tar_plan(
   
   ## Input species list options -------
   
@@ -42,15 +42,21 @@ targets <- list (
   ),
 
   # USG species
-  tarchetypes::tar_file_read(name = usg,
-                             command = fs::path("data/taxa_summary_Upper Spencer Gulf - Gawler Ranges.csv"),
-                             read = readr::read_csv(!!.x, col_types = readr::cols())
+  
+  stores = fs::dir_ls(dirname(tars$envPIA$setup$store)
+                       , regexp = "concern\\/objects\\/concern$"
+                       , recurse = TRUE
+  ),
+  
+  tarchetypes::tar_file_read(name = usg, 
+                             command = stores[1], 
+                             read = readRDS(!!.x)
   ),
   
   # BP species
-  tarchetypes::tar_file_read(name = bp,
-                             command = fs::path("data/taxa_summary_Braemer Province.csv"),
-                             read = readr::read_csv(!!.x, col_types = readr::cols())
+  tarchetypes::tar_file_read(name = bp, 
+                             command = stores[2], 
+                             read = readRDS(!!.x)
   ),
   
   ## Target species list ------
@@ -61,7 +67,8 @@ targets <- list (
                .$Aves %>% 
                replace_taxa(taxa_col = "search_term") %>% 
                clean_taxa_df(taxacol = search_term, 
-                             commoncol = ala_vernacular_name)
+                             commoncol = ala_vernacular_name) %>% 
+               add_common()
   )
   
 )
