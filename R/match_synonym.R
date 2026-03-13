@@ -59,41 +59,40 @@
 
 fetch_synonyms <- function(x) {
   
+  ## Get synonyms for the search term from itis ------
   syn <- taxize::synonyms(x, db = "itis", ask = FALSE)
   
-  # Step 1: standardize empty data frames
-  lst_standard <- Map(
-    function(df, nm) {
-      if (is.data.frame(df) && nrow(df) == 0 && ncol(df) == 0) {
-        data.frame(
-          .id       = nm,
-          sub_tsn    = NA_character_,
-          acc_tsn    = NA_character_,
-          syn_author = NA_character_,
-          syn_name   = NA_character_,
-          syn_tsn    = NA_character_,
-          stringsAsFactors = FALSE
-        )
+  ## Make the retrieved lists into a dataframe to match existing synonyms.csv ------
+  syn %>% 
+    purrr::imap_dfr(~{
+      if (!is.data.frame(.x) || nrow(.x) == 0) {
+        tibble::tibble(id = .y, acc_name = NA, syn_name = NA)
       } else {
-        df
+        
+        acc <- dplyr::first(.x$acc_name %||% NA)
+        syn_names <- unique(.x$syn_name %||% NA)
+        
+        tibble::tibble(
+          id = .y,
+          acc_name = acc,
+          syn_name = syn_names
+        )
       }
-    },
-    syn,
-    names(syn)
-  )
-  
-  # Step 2: bind rows with .id = "taxa"
-  df_bound <- dplyr::bind_rows(lst_standard, .id = ".id") %>% 
-    select(-matches("^dummy$")) %>% 
-    dplyr::mutate(across(everything(), ~ tidyr::replace_na(.x, "NoData")))
-  
-  return(df_bound)
+    }) %>% 
+    tidyr::pivot_longer(c(acc_name, syn_name),
+                        names_to = "name_type",
+                        values_to = "name") %>% 
+    dplyr::filter(!is.na(name)) %>% 
+    dplyr::mutate(name_bi = stringr::str_trim(paste(stringr::word(name, 1), 
+                                                    stringr::word(name, 2))
+    )) %>% 
+    dplyr::distinct()
   
 }
 
 ## main function ------
 
-match_synonym <- function(taxa, path = "../data/synonyms.csv") {
+match_synonym <- function(taxa, path = "data/synonyms.csv") {
   
   # ensure unique input
   taxa <- unique(taxa)
