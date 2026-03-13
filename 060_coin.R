@@ -44,7 +44,7 @@ tar_plan(
   ## Build iData -------
   tar_target(name = iData,
              command = info_table %>% 
-             dplyr::select(-Genus, -Species) %>% 
+               dplyr::select(-Genus, -Species) %>% 
                dplyr::rename(uName = common,
                              uCode = search_term) %>%
                dplyr::mutate(uCode = gsub(" ", "_", uCode))  
@@ -58,7 +58,7 @@ tar_plan(
                                     "ElevationalRange|RlEoo|rec_",
                                     "anthro_",
                                     "Db|DB|HB|Hb")),
-
+  
   pressure_iMeta = build_iMeta(iData,
                                build_threat_groups(iData),
                                index_name = "Pressure"),
@@ -66,12 +66,17 @@ tar_plan(
   exposure_iMeta = build_iMeta(iData,
                                build_exposure_groups(iData, expcols = exposurethreat_prefix),
                                index_name = "Exposure"),
-
+  
   iMeta = merge_iMeta(iMeta_list = list(sensitivity_iMeta, pressure_iMeta, exposure_iMeta),
                       parent_name = "Vulnerability") %>% assign_iNames(),
-
-## Build COIN ------
-coin = COINr::new_coin(iData = iData,
-                       iMeta = iMeta,
-                       level_names = c("Variable", "Indicator", "Sub-index", "Index"))
+  
+  ## Build COIN ------
+  coin = COINr::new_coin(iData = iData,
+                         iMeta = iMeta,
+                         level_names = c("Variable", "Indicator", "Sub-index", "Index")),
+  
+  coinA = COINr::new_coin(iData = iData %>% dplyr::select(-dplyr::any_of(exposure_iMeta$iCode)),
+                          iMeta = merge_iMeta(iMeta_list = list(sensitivity_iMeta, pressure_iMeta),
+                                              parent_name = "Vulnerability") %>% assign_iNames(),
+                          level_names = c("Variable", "Indicator", "Sub-index", "Index"))
 )

@@ -124,7 +124,8 @@ assign_iNames <- function(iMeta,
                           name_lookup = bird_name_lookup) {
   
   if (!"iName" %in% base::names(iMeta)) {
-    base::stop("iMeta must contain column 'iName'.")
+    warning("Column 'iName' not found in iMeta. Returning input unchanged.")
+    return(iMeta)
   }
   
   match_idx <- base::match(iMeta$iName,

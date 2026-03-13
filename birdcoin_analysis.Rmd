@@ -272,7 +272,7 @@ plot_bar(coin_1, dset = "Aggregated",
 sens_iCodes <- na.omit((iMeta$iCode[iMeta$Parent == "Sensitivity"]))
 sens_data <- coin_1$Data$Aggregated %>% 
   select(uCode, sens_iCodes) %>% 
-  right_join(coin$Meta$Unit, by = "uCode")
+  right_join(coin_1$Meta$Unit, by = "uCode")
 
 
 plots <- lapply(sens_iCodes, function(code) {
@@ -337,6 +337,21 @@ wrap_plots(plots, ncol = 2)
 remove_Lv3 <- COINr::remove_elements(coin_1, Level = 3, dset = "Aggregated", iCode = "Vulnerability")
 
 remove_Lv3$RankDiffs
+
+```
+
+## Comparing coins
+
+```{r compare}
+
+tar_load(coinA_1, store = tars$birdcoin$store)
+compare_coins(coin_1, coinA_1, 
+              dset = "Aggregated", 
+              iCode = "Vulnerability",
+              compare_by = "ranks",
+              sort_by = "Abs.diff", 
+              decreasing = TRUE) %>% 
+  left_join(coin_1$Meta$Unit, by = "uCode")
 
 ```
 

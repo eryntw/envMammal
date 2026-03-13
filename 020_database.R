@@ -148,11 +148,9 @@ tar_plan(
   ),
   
   
-  ## Match database species -------
-  
-  tar_file_read(name = syn_db, 
-                command = fs::path("data/synonyms.csv"),
-                read = readr::read_csv(!!.x, col_types = readr::cols())
+  ## Match database species using synonym database -------
+  tar_target(name = syn_db, 
+             command = match_synonym(splist$search_term)
   ),
   
   ## join database: sa_birds -------

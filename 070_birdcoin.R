@@ -20,6 +20,7 @@ tar_source()
 # targets -------
 
 coin <- tar_read(coin, store = tars$coin$store)
+coinA <- tar_read(coinA, store = tars$coin$store)
 exposure_indicator <- tar_read(exposure_indicator, store = tars$exposure$store)
 
 tar_plan(
@@ -90,15 +91,15 @@ tar_plan(
     COINr::Normalise(dset = "Treated") %>%
     COINr::Aggregate(dset = "Normalised", f_ag = "a_amean"),
   
-  ## COIN_1 exclude exposure ------
-  
-  coin_2 = COINr::change_ind(coin,
-                             drop = setdiff(coin$Meta$Ind$iCode[coin$Meta$Ind$Level == 1],
+  ## COIN1_1 exclude exposure ------
+
+  coinA_1 = COINr::change_ind(coinA,
+                             drop = setdiff(coinA$Meta$Ind$iCode[coinA$Meta$Ind$Level == 1],
                                             c(sensitivity_ind, pressure_ind)),
-                             regen = TRUE) %>% 
-    COINr::Treat(dset = "Raw", 
+                             regen = TRUE) %>%
+    COINr::Treat(dset = "Raw",
                  indiv_specs = treat_indiv_specs,
-                 global_specs = "none") %>% 
+                 global_specs = "none") %>%
     COINr::Normalise(dset = "Treated") %>%
     COINr::Aggregate(dset = "Normalised", f_ag = "a_amean")
   

@@ -49,6 +49,21 @@ purrr::walk2(purrr::map(tars_local, "script")
              , \(x, y) targets::tar_prune(script = x, store = y)
 )
 
+# tar_load everything ----------
+stores <- purrr::map(tars_local, "store")
+purrr::iwalk(stores, function(store_path, store_name) {
+  
+  message("Loading store: ", store_name)
+  
+  objs <- targets::tar_objects(store = store_path)
+  
+  targets::tar_load(
+    names = tidyselect::all_of(objs),
+    store = store_path,
+    envir = .GlobalEnv
+  )
+  
+})
 
 ########## ---------- ##########
 
