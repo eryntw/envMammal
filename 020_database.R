@@ -40,7 +40,7 @@ tar_plan(
   ## BirdBase 2025 ------
   
   tarchetypes::tar_file_read(name = birdbase,
-                             command = "database/data_BIRDBASE v2025.1 Sekercioglu et al. Final.csv",
+                             command = "database/BIRDBASE_data.csv",
                              read = readr::read_csv(file = !!.x, 
                                                     col_types = readr::cols(),
                                                     locale = readr::locale(encoding = "ASCII")) %>% 
@@ -78,7 +78,7 @@ tar_plan(
   ## Birdlife attributes 2026 ------
   
   tarchetypes::tar_file_read(name = birdlife_attr,
-                             command = "database/BirdLife data on Australian birds/Australian bird species attributes.xlsx",
+                             command = "database/BirdLife_Australia/Australian bird species attributes.xlsx",
                              read = readxl::read_excel(path = !!.x, 
                                                        sheet = 1,
                                                        col_types = "guess") %>%
@@ -91,7 +91,7 @@ tar_plan(
   ## Birdlife habitats 2026 ------
   
   tarchetypes::tar_file_read(name = birdlife_hab,
-                             command = "database/BirdLife data on Australian birds/Habitats.xlsx",
+                             command = "database/BirdLife_Australia/Habitats.xlsx",
                              read = readxl::read_excel(path = !!.x, 
                                                        sheet = 1,
                                                        col_types = "guess") %>%
@@ -113,23 +113,15 @@ tar_plan(
                get_ausbird(subset = FALSE)
   ),
   
-  ## AVONET 2021 ------
+  ## AVONET 2021 (BirdLife taxonomic format) ------
   
-  tar_target(name = avonet, 
-             command = traitdata::avonet %>% 
-               dplyr::filter(Age == 0) %>% 
-               janitor::clean_names(case = "upper_camel") %>% 
-               dplyr::group_by(Genus, Species) %>%
-               dplyr::summarise(dplyr::across(dplyr::where(is.numeric),
-                                              list(
-                                                mean = ~ mean(.x, na.rm = TRUE),
-                                                median = ~ median(.x, na.rm = TRUE)
-                                              ),
-                                              .names = "{.col}_{.fn}"
-               ),
-               .groups = "drop") %>% 
-               dplyr::filter(!(base::is.na(Genus) & base::is.na(Species))) %>% 
-               dplyr::mutate(dplyr::across(where(is.numeric),~ round(.x, 2)))
+  tarchetypes::tar_file_read(name = avonet,
+                             command = "database/AVONET Supplementary dataset 1.xlsx",
+                             read = readxl::read_excel(path = !!.x, 
+                                                       sheet = "AVONET1_BirdLife",
+                                                       col_types = "guess") %>%
+                               janitor::clean_names(case = "upper_camel") %>% 
+                               clean_taxa_df(taxa = Species1)
   ),
   
   ## Elton Birds 2014 ------

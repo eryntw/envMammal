@@ -64,8 +64,8 @@ map_exposure_cols <- function(df) {
       ),
       
       ## ---- HWI (ratio) ----
-      exp_nHWI = 1 / avo_HandWingIndex_mean,
-      exp_HWI = avo_HandWingIndex_mean / 100,
+      exp_nHWI = 1 / avo_HandWingIndex,
+      exp_HWI = avo_HandWingIndex / 100,
       
       ## ---- Activity pattern ----
       exp_Nocturnal = if_else(elt_Nocturnal == 1, 1, 0),

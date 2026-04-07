@@ -8,7 +8,6 @@
 #' @param A Data frame containing columns `Genus`, `Species`, and optionally `common`
 #' @param B Data frame containing columns `Genus`, `Species`, and optionally `common`
 #' @param prefix Character. Prefix added to non-taxonomic columns in B
-#' @param max_dist Integer. Maximum string distance for fuzzy joins (default = 3)
 #' @param syn_db Character. Path to synonym CSV file
 #'
 #' @return A list with elements `match` and `unmatch`
@@ -95,7 +94,7 @@ join_database_ <- function(A,
   
   ## ---- 3. Synonym matching ----
   syn_matches <- unmatch2 %>%
-    dplyr::inner_join(syn_db, by = c("taxa" = ".id")) %>%
+    dplyr::inner_join(syn_db, by = c("taxa" = "id")) %>%
     tidyr::separate(
       name_bi,
       into = c("S_Genus", "S_Species"),

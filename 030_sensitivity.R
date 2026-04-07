@@ -34,7 +34,6 @@ tar_plan(
         search_term, common, # Names
         
         ## Climate ------
-        bb_ElevationalRange,
         bl_RlEooSmallerOfBreedingAndNonBreedingEoo,
         rec_stern_dehoedt_2000_minor_simpson,
         rec_geom_90M_s10e110_simpson, 
@@ -74,27 +73,32 @@ tar_plan(
       dplyr::mutate(dplyr::across(where(is.numeric),~ round(.x, 2)))
   ),
   
-  ## Append NA to the manually imputed table -------
+  ## Detect missing values ------
+  sensitivity_missing = find_missing_values(sensitivity),
+
   
+  ## Creates/updates the manual table file ------
   tar_target(
-    name = impute_sensitivity,
-    command = make_manual_table(sensitivity, dir = "data")
+    sensitivity_mtable_file,
+    update_manual_table(
+      sensitivity_missing,
+      "data/current_mtable.csv"
+    ),
+    format = "file"
   ),
   
-  ## Read manually processed mtable -------
-  
-  tar_file_read(name = processed_mtable,
-                command = "data/current_mtable.csv",
-                read = readr::read_csv(!!.x, col_types = readr::cols())
+  ## Read the curated table ------
+  tarchetypes::tar_file_read(name = processed_mtable,
+                             command = sensitivity_mtable_file,
+                             read = readr::read_csv(!!.x)
+      
   ),
   
-  ## impute -------
-  
+  ## Join manual values back into dataset ------
   tar_target(name = sensitivity_imputed,
              command = map_traits(A = processed_mtable, 
                                   B = sensitivity,
                                   x = "search_term", 
                                   Atype = "long")
-  ),
-  
+  )
 )

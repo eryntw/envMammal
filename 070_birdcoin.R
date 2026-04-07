@@ -33,7 +33,6 @@ tar_plan(
     # Climate ----
     "bl_RlEooSmallerOfBreedingAndNonBreedingEoo",
     "rec_stern_dehoedt_2000_minor_simpson",
-    "rec_geom_90M_s10e110_simpson",
     
     # Habitat ----
     "bb_Hb",
@@ -79,7 +78,7 @@ tar_plan(
     t_score_sum_sp = list(f1 = "log")
   ),
   
-  ## COIN_1 baseline ------
+  ## COIN 1 baseline ------
   
   coin_1 = COINr::change_ind(coin, 
                              drop = setdiff(coin$Meta$Ind$iCode[coin$Meta$Ind$Level == 1],
@@ -91,7 +90,7 @@ tar_plan(
     COINr::Normalise(dset = "Treated") %>%
     COINr::Aggregate(dset = "Normalised", f_ag = "a_amean"),
   
-  ## COIN1_1 exclude exposure ------
+  ## COIN A_1 exclude exposure ------
 
   coinA_1 = COINr::change_ind(coinA,
                              drop = setdiff(coinA$Meta$Ind$iCode[coinA$Meta$Ind$Level == 1],

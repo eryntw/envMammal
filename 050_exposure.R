@@ -55,7 +55,7 @@ tar_plan(
                           bb_AverageMass,
                           
                           # Maneuverability ----
-                          avo_HandWingIndex_mean,
+                          avo_HandWingIndex,
                           
                           # Activity ----
                           elt_Nocturnal,
@@ -87,23 +87,28 @@ tar_plan(
                                                     ~ tidyr::replace_na(., 0)))
   ),
   
+  ## Detect missing values ------
+  exposure_missing = find_missing_values(exposure0),
   
-  ## Append NA to the manually imputed table -------
   
+  ## Creates/updates the manual table file ------
   tar_target(
-    name = impute_exposure,
-    command = make_manual_table(exposure0, dir = "data")
+    exposure_mtable_file,
+    update_manual_table(
+      exposure_missing,
+      "data/current_mtable.csv"
+    ),
+    format = "file"
   ),
   
-  ## Read manually processed mtable -------
-  
+  ## Read the curated table ------
   tarchetypes::tar_file_read(name = processed_mtable,
-                             command = "data/current_mtable.csv",
-                             read = readr::read_csv(!!.x, col_types = readr::cols())
+                             command = exposure_mtable_file,
+                             read = readr::read_csv(!!.x)
+                             
   ),
   
-  ## impute -------
-  
+  ## Join manual values back into dataset ------
   tar_target(name = exposure_imputed,
              command = map_traits(A = processed_mtable, 
                                   B = exposure,
@@ -128,7 +133,8 @@ tar_plan(
                "CollisionWind"),
   
   tarchetypes::tar_file_read(name = stressor_matrix,
-                             command = "notes/ExposureTraits_Birds.xlsx",
+                             command = fs::path(here::here(), "..", "TraitsMeta",
+                                                "ExposureTraits.xlsx"),
                              read = readxl::read_excel(path = !!.x, 
                                                        sheet = "StressorTraitMapping",
                                                        col_types = "guess") %>%

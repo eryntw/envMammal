@@ -12,7 +12,7 @@
 #'   columns `Genus`, `Species`, and `search_term`.
 #' @param api An authenticated IUCN API object used by `get_iucn_clean()`.
 #' @param synonym_path File path to a CSV containing synonym mappings.
-#'   The CSV must include columns `.id` (original name) and `name_bi`
+#'   The CSV must include columns `id` (original name) and `name_bi`
 #'   (accepted binomial name).
 #'
 #' @return A list with two elements:
@@ -87,7 +87,7 @@ get_iucn_species_data <- function(splist,
   # ---- Match synonyms ----
   synmatch <- rows_null %>%
     dplyr::select(search_term) %>%
-    dplyr::left_join(synonyms, by = c("search_term" = ".id")) %>%
+    dplyr::left_join(synonyms, by = c("search_term" = "id")) %>%
     tidyr::separate(
       name_bi,
       into = c("Genus", "Species"),

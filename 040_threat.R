@@ -27,7 +27,9 @@ tar_plan(
   api = Sys.getenv("IUCN_REDLIST_KEY"),
   
   ## Get IUCN data for splist -------
-  iucn_data = get_iucn_species_data(splist, api = iucnredlist::init_api(api)),
+  tar_target(name = iucn_data,
+             command = get_iucn_species_data(splist, api = iucnredlist::init_api(api))
+  ),
   
   ## Extract threats ------
   targets::tar_target(name = iucn_threat,

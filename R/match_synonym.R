@@ -63,7 +63,7 @@ fetch_synonyms <- function(x) {
   syn <- taxize::synonyms(x, db = "itis", ask = FALSE)
   
   ## Make the retrieved lists into a dataframe to match existing synonyms.csv ------
-  syn %>% 
+  df <- syn %>% 
     purrr::imap_dfr(~{
       if (!is.data.frame(.x) || nrow(.x) == 0) {
         tibble::tibble(id = .y, acc_name = NA, syn_name = NA)
@@ -88,6 +88,7 @@ fetch_synonyms <- function(x) {
     )) %>% 
     dplyr::distinct()
   
+  return(df)
 }
 
 ## main function ------
@@ -111,7 +112,7 @@ match_synonym <- function(taxa, path = "data/synonyms.csv") {
   # ---- Case 2: file exists: only process new taxa ----
   processed <- readr::read_csv(path, col_types = readr::cols())
   
-  new_taxa <- base::setdiff(taxa, processed$.id)
+  new_taxa <- base::setdiff(taxa, processed$id)
   
   if (length(new_taxa) == 0) {
     message("No new taxa to query — returning existing file")
@@ -121,6 +122,12 @@ match_synonym <- function(taxa, path = "data/synonyms.csv") {
   message("Querying synonyms for ", length(new_taxa), " new taxa")
   
   syn_new <- fetch_synonyms(new_taxa)
+  
+  # skip if nothing returned
+  if (is.null(syn_new) || nrow(syn_new) == 0) {
+    message("No synonym results returned — keeping existing file")
+    return(processed)
+  }
   
   combined <- dplyr::bind_rows(processed, syn_new) %>%
     dplyr::distinct()
