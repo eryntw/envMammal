@@ -1,4 +1,4 @@
-#' Summarise IAS herbivore and predator pressure per species
+#' Summarise IAS herbivore and predator stressor per species
 #'
 #' Aggregates (timing + scope + severity) per threat record,
 #' then summarises per species using either sum or max.
@@ -8,7 +8,7 @@
 #'   timing_score, scope_score, severity_score
 #'
 #' @param agg_method Character:
-#'   "sum" = cumulative IAS pressure per species (default)
+#'   "sum" = cumulative IAS stressor per species (default)
 #'   "max" = strongest single IAS threat per species
 #'
 #' @return Dataframe with:
@@ -18,7 +18,7 @@
 #'
 #' @export
 #' 
-summarise_ias_pressure <- function(scored_threat,
+summarise_ias_stressor <- function(scored_threat,
                                    agg_method = c("sum", "max")) {
   
   agg_method <- match.arg(agg_method)

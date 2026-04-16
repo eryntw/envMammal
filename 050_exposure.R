@@ -67,7 +67,7 @@ tar_plan(
   
   ## Add invasive herbivores | predators as threat data ------
   
-  threat_inv = summarise_ias_pressure(scored_threat, agg_method = "max"),
+  threat_inv = summarise_ias_stressor(scored_threat, agg_method = "max"),
   
   ## Add increasing fire as threat data ------
   

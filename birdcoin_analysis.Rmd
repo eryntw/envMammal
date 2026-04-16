@@ -355,3 +355,164 @@ compare_coins(coin_1, coinA_1,
 
 ```
 
+## Change aggregation method: Aggregation
+
+Compensability: Using the maximum value is a form of non-compensatory aggregation at that level. It means a unit is judged only by its "best" trait, and poor performance in other indicators within that same group is completely ignored.
+
+Information Loss: The sources note that extreme operators result in only one indicator defining the overall performance of that group, which means there is no "balancing" or "optimization" of weights to be performed for that specific level.
+
+```{r aggmax}
+
+# Remove the rest of threat indicators
+
+coin_11 <- change_ind(coin_1, drop = c("t_score_max_sp",
+                                      "t_n_lv1",
+                                      "t_n_lv2_total"), regen = TRUE)
+plot_framework(coin_11, type = "stack", text_size = 4)
+
+# Adjust weight for collisions and level 1 indicator aggregation
+
+w1 <- coin_11$Meta$Weights$Original
+w1$Weight[w1$iCode == "CollisionWind"] <- 0.5
+w1$Weight[w1$iCode == "CollisionSolar"] <- 0.5
+my_max <- function(x, ...) max(x, na.rm = TRUE)
+
+## Lv1-Lv2 max
+coin_12 <- Aggregate(coin_11, dset = "Normalised", 
+                     w = w1, 
+                     f_ag = c("my_max", "a_amean", "a_amean"),
+                     regen = TRUE)
+
+## Lv2-lv3 max
+coin_13 <- Aggregate(coin_11, dset = "Normalised", 
+                     w = w1, 
+                     f_ag = c("a_amean", "my_max", "a_amean"),
+                     regen = TRUE)
+
+## gmean
+coin_14 <- coin_11
+coin_14$Log$Normalise$global_specs <- list(f_n = "n_minmax",
+                                           f_n_para = list(l_u = c(1,100)))
+coin_14 <- Regen(coin_14) %>% 
+  Aggregate(dset = "Normalised",
+            w = w1, 
+            f_ag = "a_gmean")
+
+coin_14$Log
+```
+## Compare coin_12 to base coin
+
+```{r compare12}
+
+df_12 <- get_results(coin_12, dset = "Aggregated", tab_type = "Aggs")
+base_results <- get_results(coin_1, dset = "Aggregated", tab_type = "Aggs")
+
+# Get group with more than 1 indicator
+group <- coin_11$Meta$Ind %>%
+  group_by(Parent) %>%
+  filter(n() > 3, Level == 2) %>%
+  ungroup() %>% select(iCode)
+
+cols <- c("Sensitivity", "Exposure", "Pressure")
+cols2 <- coin_12$Meta$Ind %>% filter(Level == 2) %>% select(iCode) %>% unique()
+  
+compare_density_multi(list(base = base_results, coin12 = df_12), cols2$iCode)
+
+# which max indicators were selected?
+maxcount <- lapply(cols2$iCode, function(x) {get_max_indicator(coin_12, x) %>% .$summary}) %>%
+  purrr::map_dfr(~ tibble(
+    iCode = names(.x),
+    Percentage = as.numeric(.x)/nrow(coin_12$Data$Raw)
+  )) %>% 
+  right_join(coin_12$Meta$Ind %>% select(iCode, Parent, iName),
+             by = "iCode") %>% 
+  mutate(
+    Percentage = case_when(
+      is.na(Percentage) & Parent %in% cols2 ~ 0,
+      is.na(Percentage) & !Parent %in% cols2 ~ 1,
+      TRUE ~ round(Percentage, 2)
+    )
+  )
+
+```
+
+## Compare coin_13 to base coin
+
+```{r compare13}
+
+df_13 <- get_results(coin_13, dset = "Aggregated", tab_type = "Aggs")
+
+cols <- c("Sensitivity", "Exposure", "Pressure")
+
+compare_density_multi(list(base = base_results, coin13 = df_13), 
+                      cols) 
+
+# which max indicators were selected?
+maxcount <- lapply(cols, function(x) {get_max_indicator(coin_13, x) %>% .$summary}) %>%
+  purrr::map_dfr(~ tibble(
+    uCode = names(.x),
+    MaxCount = as.numeric(.x)
+  ))
+
+```
+## Compare coin_14 to base coin
+
+```{r compare14}
+
+df_14 <- get_results(coin_14, dset = "Aggregated", tab_type = "Aggs")
+
+cols <- c("Sensitivity", "Exposure", "Pressure")
+
+cols2 <- coin_14$Meta$Ind %>% filter(Level == 2) %>% select(iCode) %>% unique()
+
+compare_density_multi(list(base = base_results, coin14 = df_14), 
+                      cols) 
+
+compare_density_multi(list(base = base_results, coin14 = df_14), 
+                      cols2$iCode) 
+
+```
+
+## compare coin_12 and 14
+
+```{r compare1214}
+
+compare_density_multi(list(base = base_results, 
+                           coin12 = df_12,
+                           coin14 = df_14), 
+                      cols2$iCode) 
+
+compare_density_multi(list(base = base_results, 
+                           coin12 = df_12,
+                           coin13 = df_13,
+                           coin14 = df_14), 
+                      cols) 
+
+compare_coins_multi(list(coin1 = coin_11,
+                         coin12 = coin_12,
+                         coin13 = coin_13,
+                         coin14 = coin_14),
+                    dset = "Aggregated",
+                    iCode = "Vulnerability",
+                    also_get = c("uName"),
+                    tabtype = "Values",
+                    ibase = 1,
+                    sort_table = TRUE,
+                    compare_by = "ranks"
+)
+
+compare_coins_multi(list(coin1 = coin_11,
+                         coin12 = coin_12,
+                         coin13 = coin_13,
+                         coin14 = coin_14),
+                    dset = "Aggregated",
+                    iCode = "Vulnerability",
+                    also_get = c("uName"),
+                    tabtype = "Values",
+                    ibase = 1,
+                    sort_table = TRUE,
+                    compare_by = "scores"
+)
+
+```
+
