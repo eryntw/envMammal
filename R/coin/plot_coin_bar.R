@@ -140,12 +140,21 @@ plot_coin_bar <- function(
       colours_use <- colours
     }
     
+    # interactive add on
+    
+    tbl$tooltip <- paste0(
+      "Species: ", tbl$uName,
+      "<br>Indicator: ", tbl$code,
+      "<br>Value: ", round(tbl$value, 2)
+    )
+    
     p <- ggplot(
       tbl,
       aes(
         x = tidytext::reorder_within(uName, value, code),
         y = value,
-        fill = code
+        fill = code,
+        text = tooltip
       )
     ) +
       geom_col() +
@@ -164,16 +173,8 @@ plot_coin_bar <- function(
         axis.ticks.x = element_blank(),
         legend.position = "none",
         aspect.ratio = 0.5,
-        panel.spacing.y = unit(2, "lines") # spacing between faceted rows
+        panel.spacing.y = unit(1, "lines") # spacing between faceted rows
       )
-    
-    # interactive add on
-    
-    tbl$tooltip <- paste0(
-      "Species: ", tbl$uName,
-      "<br>Indicator: ", tbl$code,
-      "<br>Value: ", round(tbl$value, 2)
-    )
     
     pi <- plotly::ggplotly(p, tooltip = "text", width = 600, height = 300)
     

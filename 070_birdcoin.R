@@ -61,10 +61,7 @@ tar_plan(
     "t_status_score",
     
     # Threats ----
-    "t_score_sum_sp",
-    "t_score_max_sp",
-    "t_n_lv1",
-    "t_n_lv2_total"
+    "t_score_sum_sp"
     ),
   
   #### Exposure ####
