@@ -18,9 +18,9 @@
 plot_coin_hierarchy <- function(
     df,
     circular = FALSE,
-    leaf_size = 2.5,
-    internal_size = 3,
-    root_size = 4
+    leaf_size = 5,
+    internal_size = 6,
+    root_size = 6
 ) {
   
   # ---- Load required packages ----
@@ -38,7 +38,9 @@ plot_coin_hierarchy <- function(
   mygraph <- igraph::graph_from_data_frame(df)
   
   # ---- Plot ----
-  p <- ggraph::ggraph(mygraph, layout = "dendrogram", circular = circular) + 
+  p <- ggraph::ggraph(mygraph, 
+                      layout = "dendrogram", 
+                      circular = circular) + 
     
     # edges
     ggraph::geom_edge_elbow(aes(width = Percentage, color = Percentage), 
@@ -87,7 +89,9 @@ plot_coin_hierarchy <- function(
     ggplot2::guides(edge_colour = guide_legend(), edge_width = guide_legend()) +
     ggplot2::theme(
       legend.position = c(0.9, 0.1),
-      legend.justification = c(1, 0)
+      legend.justification = c(1, 0),
+      legend.title = element_text(size = 16),
+      legend.text = element_text(size = 14)
     )
   
   return(p)

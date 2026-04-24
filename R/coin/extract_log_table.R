@@ -96,7 +96,8 @@ extract_weights <- function(coin) {
   
   if (is.null(w)) return("none")
   
-  w_filtered <- w[w$Weight != 1, ]
+  w.df <- coin$Meta$Weights[[coin$Log$Aggregate$w]]
+  w_filtered <- w.df[w.df$Weight != 1, ]
   
   if (nrow(w_filtered) == 0) return("none")
   

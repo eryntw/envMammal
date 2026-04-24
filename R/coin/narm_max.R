@@ -1,0 +1,1 @@
+narm_max <- function(x, ...) max(x, na.rm = TRUE)
