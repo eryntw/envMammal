@@ -1,7 +1,6 @@
 library(targets)
 library(tarchetypes)
 library(crew)
-library(crew.cluster)
 
 use_cores <- parallel::detectCores() - 2
 

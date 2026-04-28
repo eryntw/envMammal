@@ -15,10 +15,10 @@
 #' @author eryntw
 #' @export
 
-join_database_ <- function(A,
-                           B,
-                           prefix,
-                           syn_db) {
+join_database_linux <- function(A,
+                                B,
+                                prefix,
+                                syn_db) {
   
   ## ---- 0. Ensure UTF-8 (defensive) ----
   A <- dplyr::mutate(A, dplyr::across(dplyr::where(is.character), stringi::stri_enc_toutf8))
@@ -39,6 +39,7 @@ join_database_ <- function(A,
     )
   
   ## ---- 1. Round 1: strict (Genus + Species ONLY) ----
+  message("Starting Round 1...")
   match1 <- dplyr::inner_join(
     A,
     B,
@@ -56,15 +57,14 @@ join_database_ <- function(A,
     dplyr::mutate(match = "un_r1")
   
   ## ---- 2. Relaxed match (ONLY if common exists) ----
+  message("Round 1 done. Starting Round 2...")
   if (use_common) {
     
     match2 <- tidyr::crossing(unmatch1, B) %>%
       dplyr::mutate(
-        species_dist = stringdist::stringdist(Species, B_Species, method = "osa")
+        species_dist = mapply(function(a, b) adist(a, b), Species, B_Species),
+        common_dist  = mapply(function(a, b) adist(a, b), common, B_common)
       ) %>% 
-      dplyr::mutate(
-        common_dist = stringdist::stringdist(common, B_common, method = "osa")
-      ) %>%
       dplyr::filter(Genus == B_Genus | species_dist <= 2) %>%
       dplyr::filter(common_dist <= 2) %>%
       dplyr::mutate(match = "r2") %>% 
@@ -93,6 +93,7 @@ join_database_ <- function(A,
   }
   
   ## ---- 3. Synonym matching ----
+  message("Round 2 done. Starting Round 3...")
   syn_matches <- unmatch2 %>%
     dplyr::inner_join(syn_db, by = c("taxa" = "id")) %>%
     tidyr::separate(
@@ -118,6 +119,7 @@ join_database_ <- function(A,
     dplyr::select(-non_na, -name, -name_bi)
   
   ## ---- 3-1. Unmatched after round 3 ----
+  message("Round 3 done.")
   unmatch3 <- dplyr::anti_join(
     unmatch2,
     syn_matches,

@@ -12,7 +12,7 @@ envCleaned:
     filt_col: NULL
     filt_level: NULL
     buffer: 0
-    extent_time: "P50Y" # must be a period of years
+    extent_time: "P100Y" # must be a period of years
     extent_taxa: "sa_br_dissolve"
   grain:
     grain_x: 90

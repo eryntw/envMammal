@@ -22,7 +22,6 @@ organise_piaout <- function(df) {
       future,
       aoi_cont,
       common_vals,
-      genus,
       kingdom
     ) %>%
     dplyr::distinct() %>%

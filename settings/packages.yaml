@@ -6,6 +6,7 @@ packages:
   - fs
   - targets
   - tarchetypes
+  - crew
   - broom
   - stringr
   - readxl
@@ -16,6 +17,7 @@ packages:
   - janitor
   - scales
   - COINr
+  - fuzzyjoin
 
 database:
   - traitdata
@@ -24,4 +26,5 @@ database:
   - ritis
   - taxize
   - taxadb
+  - potions
   

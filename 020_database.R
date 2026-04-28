@@ -1,13 +1,10 @@
+
 library(targets)
 library(tarchetypes)
-library(crew)
-library(crew.cluster)
 
-use_cores <- parallel::detectCores() - 2
-
-tar_option_set(
-  packages = yaml::read_yaml("settings/packages.yaml")$packages, 
-  controller = crew_controller_local(workers = use_cores),
+targets::tar_option_set(
+  packages = yaml::read_yaml("settings/packages.yaml")$packages,
+  controller = crew::crew_controller_local(workers = 50),
   workspace_on_error = TRUE # inspect the error using tar_traceback(target)
 )
 
@@ -21,6 +18,7 @@ tar_source()
 
 splist <- tar_read(splist, store = tars$taxa$store)
 sa_birds <- tar_read(sa_birds, store = tars$taxa$store)
+dbdir <- "/mnt/envshare/data/traits/raw/bird"
 
 tar_plan(
   
@@ -40,10 +38,9 @@ tar_plan(
   ## BirdBase 2025 ------
   
   tarchetypes::tar_file_read(name = birdbase,
-                             command = "database/BIRDBASE_data.csv",
+                             command = fs::path(dbdir, "BIRDBASE_data.csv"),
                              read = readr::read_csv(file = !!.x, 
-                                                    col_types = readr::cols(),
-                                                    locale = readr::locale(encoding = "ASCII")) %>% 
+                                                    col_types = readr::cols()) %>% 
                                janitor::clean_names(case = "upper_camel") %>% 
                                clean_taxa_df(commoncol = EnglishNameBirdLifeIocClementsAviList) %>% 
                                get_birdbase(subset = FALSE) # ATTENTION
@@ -52,7 +49,7 @@ tar_plan(
   ## BirdBase Nest binary ------
   
   tarchetypes::tar_file_read(name = bb_nest,
-                             command = "database/BIRDBASE v2025.1 Sekercioglu et al. Final.xlsx",
+                             command = fs::path(dbdir,"BIRDBASE v2025.1 Sekercioglu et al. Final.xlsx"),
                              read = readxl::read_excel(path = !!.x, 
                                                        sheet = "Nest Details",
                                                        col_types = "guess") %>% 
@@ -65,7 +62,8 @@ tar_plan(
   ## Birdlife Generation Length 2025 ------
   
   tarchetypes::tar_file_read(name = genlength,
-                             command = "database/latest_generation_lengths_of_the_world's_birds_2025.xlsx",
+                             command = fs::path(dbdir, 
+                                                "latest_generation_lengths_of_the_world's_birds_2025.xlsx"),
                              read = readxl::read_excel(path = !!.x, 
                                                        sheet = 1,
                                                        skip = 1,
@@ -78,7 +76,8 @@ tar_plan(
   ## Birdlife attributes 2026 ------
   
   tarchetypes::tar_file_read(name = birdlife_attr,
-                             command = "database/BirdLife_Australia/Australian bird species attributes.xlsx",
+                             command = fs::path(dbdir, 
+                                                "BirdLife_Australia/Australian bird species attributes.xlsx"),
                              read = readxl::read_excel(path = !!.x, 
                                                        sheet = 1,
                                                        col_types = "guess") %>%
@@ -91,7 +90,7 @@ tar_plan(
   ## Birdlife habitats 2026 ------
   
   tarchetypes::tar_file_read(name = birdlife_hab,
-                             command = "database/BirdLife_Australia/Habitats.xlsx",
+                             command = fs::path(dbdir, "BirdLife_Australia/Habitats.xlsx"),
                              read = readxl::read_excel(path = !!.x, 
                                                        sheet = 1,
                                                        col_types = "guess") %>%
@@ -116,7 +115,7 @@ tar_plan(
   ## AVONET 2021 (BirdLife taxonomic format) ------
   
   tarchetypes::tar_file_read(name = avonet,
-                             command = "database/AVONET Supplementary dataset 1.xlsx",
+                             command = fs::path(dbdir, "AVONET Supplementary dataset 1.xlsx"),
                              read = readxl::read_excel(path = !!.x, 
                                                        sheet = "AVONET1_BirdLife",
                                                        col_types = "guess") %>%
@@ -151,21 +150,21 @@ tar_plan(
                join_database_(summary_df, prefix = "rec_", syn_db = syn_db) %>%  
                join_database_(birdbase, prefix = "bb_", syn_db = syn_db) %>%
                join_database_(bb_nest, prefix = "bbn_", syn_db = syn_db) %>% 
-               join_database_(genlength, prefix = "bl_", syn_db = syn_db) %>%
-               join_database_(birdlife_attr %>% dplyr::select(-ScientificName), 
-                              prefix = "bl_", syn_db = syn_db) %>%
-               join_database_(birdlife_hab %>% dplyr::select(-ScientificName), 
-                              prefix = "bl_", syn_db = syn_db) %>%
-               join_database_(ausbird, prefix = "aub_", syn_db = syn_db) %>% 
-               join_database_(bird_behav, prefix = "bhv_", syn_db = syn_db) %>% 
-               join_database_(avonet, prefix = "avo_", syn_db = syn_db) %>% 
-               join_database_(elt_birds, prefix = "elt_", syn_db = syn_db)
+               join_database_(genlength, prefix = "bl_", syn_db = syn_db)
+               # join_database_(birdlife_attr %>% dplyr::select(-ScientificName), 
+               #                prefix = "bl_", syn_db = syn_db) %>%
+               # join_database_(birdlife_hab %>% dplyr::select(-ScientificName), 
+               #                prefix = "bl_", syn_db = syn_db) %>%
+               # join_database_(ausbird, prefix = "aub_", syn_db = syn_db) %>% 
+               # join_database_(bird_behav, prefix = "bhv_", syn_db = syn_db) %>% 
+               # join_database_(avonet, prefix = "avo_", syn_db = syn_db) %>% 
+               # join_database_(elt_birds, prefix = "elt_", syn_db = syn_db)
 
   ),
   
   ## join database: pilot areas -------
   pilot_subset = left_join(splist, 
-                           joined_table %>% dplyr::select(-Genus, -Species, -common), 
+                           joined_table %>% dplyr::select(-Species, -common), 
                            by = "search_term")
   
 )
