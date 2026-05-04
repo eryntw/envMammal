@@ -1,12 +1,8 @@
-
 library(targets)
 library(tarchetypes)
 
-targets::tar_option_set(
-  packages = yaml::read_yaml("settings/packages.yaml")$packages,
-  controller = crew::crew_controller_local(workers = 50),
-  workspace_on_error = TRUE # inspect the error using tar_traceback(target)
-)
+targets::tar_option_set(packages = yaml::read_yaml("settings/packages.yaml")$packages, 
+                        controller = crew::crew_controller_local(workers = 30))
 
 # tars -------
 tars <- yaml::read_yaml("_targets.yaml")
@@ -150,23 +146,48 @@ tar_plan(
                join_database_(summary_df, prefix = "rec_", syn_db = syn_db) %>%  
                join_database_(birdbase, prefix = "bb_", syn_db = syn_db) %>%
                join_database_(bb_nest, prefix = "bbn_", syn_db = syn_db) %>% 
-               join_database_(genlength, prefix = "bl_", syn_db = syn_db)
-               # join_database_(birdlife_attr %>% dplyr::select(-ScientificName), 
-               #                prefix = "bl_", syn_db = syn_db) %>%
-               # join_database_(birdlife_hab %>% dplyr::select(-ScientificName), 
-               #                prefix = "bl_", syn_db = syn_db) %>%
-               # join_database_(ausbird, prefix = "aub_", syn_db = syn_db) %>% 
-               # join_database_(bird_behav, prefix = "bhv_", syn_db = syn_db) %>% 
-               # join_database_(avonet, prefix = "avo_", syn_db = syn_db) %>% 
-               # join_database_(elt_birds, prefix = "elt_", syn_db = syn_db)
+               join_database_(genlength, prefix = "bl_", syn_db = syn_db) %>% 
+               join_database_(birdlife_attr %>% dplyr::select(-ScientificName),
+                              prefix = "bl_", syn_db = syn_db) %>%
+               join_database_(birdlife_hab %>% dplyr::select(-ScientificName),
+                              prefix = "bl_", syn_db = syn_db) %>%
+               join_database_(ausbird, prefix = "aub_", syn_db = syn_db) %>%
+               join_database_(bird_behav, prefix = "bhv_", syn_db = syn_db) %>%
+               join_database_(avonet, prefix = "avo_", syn_db = syn_db) %>%
+               join_database_(elt_birds, prefix = "elt_", syn_db = syn_db)
 
   ),
   
   ## join database: pilot areas -------
-  pilot_subset = left_join(splist, 
-                           joined_table %>% dplyr::select(-Species, -common), 
+  pilot_subset = left_join(splist %>% select(-Species, -Genus),
+                           joined_table %>% dplyr::select(-common),
                            by = "search_term")
   
+  # species = c(
+  #   "Melithreptus brevirostris",
+  #   "Amytornis textilis",
+  #   "Acanthiza iredalei",
+  #   "Gymnorhina tibicen",
+  #   "Tyto alba",
+  #   "Manorina melanotis",
+  #   "Pardalotus striatus",
+  #   "Stipiturus malachurus",
+  #   "Hylacola pyrrhopygia",
+  #   "Stagonopleura bella",
+  #   "Malurus cyaneus",
+  #   "Platycercus eximius",
+  #   "Pedionomus torquatus",
+  #   "Acanthiza pusilla",
+  #   "Calidris acuminata",
+  #   "Aphelocephala leucopsis",
+  #   "Amytornis merrotsyi",
+  #   "Grus rubicunda",
+  #   "Manorina melanocephala",
+  #   "Alectura lathami"
+  # ),
+  # 
+  # pilot_subset = joined_table %>% 
+  #   dplyr::filter(search_term %in% species)
 )
 
 

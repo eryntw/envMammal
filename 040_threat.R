@@ -2,12 +2,9 @@ library(targets)
 library(tarchetypes)
 library(crew)
 
-use_cores <- parallel::detectCores() - 2
-
 tar_option_set(
   packages = yaml::read_yaml("settings/packages.yaml")$packages, 
-  controller = crew_controller_local(workers = use_cores),
-  envir = 
+  controller = crew_controller_local(workers = 20)
 )
 
 # tars -------
@@ -18,16 +15,16 @@ tar_source()
 
 # targets -------
 
-splist <- tar_read(splist, store = tars$taxa$store)
+pilot_subset <- tar_read(pilot_subset, store = tars$database$store)
 
 tar_plan(
   
   ## API ------
   api = Sys.getenv("IUCN_REDLIST_KEY"),
   
-  ## Get IUCN data for splist -------
+  ## Get IUCN data for pilot_subset -------
   tar_target(name = iucn_data,
-             command = get_iucn_species_data(splist, api = iucnredlist::init_api(api))
+             command = get_iucn_species_data(pilot_subset, api = iucnredlist::init_api(api))
   ),
   
   ## Extract threats ------

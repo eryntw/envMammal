@@ -103,7 +103,7 @@ bird_name_lookup <- c(
   bb_obligate_migrant = "Obligate migrant",
   bl_obligate_migrant = "Obligate migrant",
   
-  bb_Rr = "Reproductive rate",
+  bb_Rr = "Restricted range",
   bl_GenerationLength = "Generation length",
   bl_is_raptor = "Raptor",
   

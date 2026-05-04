@@ -15,10 +15,10 @@
 #' @author eryntw
 #' @export
 
-join_database_linux <- function(A,
-                                B,
-                                prefix,
-                                syn_db) {
+join_database_ <- function(A,
+                           B,
+                           prefix,
+                           syn_db) {
   
   ## ---- 0. Ensure UTF-8 (defensive) ----
   A <- dplyr::mutate(A, dplyr::across(dplyr::where(is.character), stringi::stri_enc_toutf8))

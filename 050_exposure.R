@@ -2,11 +2,9 @@ library(targets)
 library(tarchetypes)
 library(crew)
 
-use_cores <- parallel::detectCores() - 2
-
 tar_option_set(
   packages = yaml::read_yaml("settings/packages.yaml")$packages, 
-  controller = crew_controller_local(workers = use_cores),
+  controller = crew_controller_local(workers = 10),
   envir = 
 )
 
@@ -132,8 +130,7 @@ tar_plan(
                "CollisionWind"),
   
   tarchetypes::tar_file_read(name = stressor_matrix,
-                             command = fs::path(here::here(), "..", "TraitsMeta",
-                                                "ExposureTraits.xlsx"),
+                             command = fs::path("/mnt/envshare/data/traits/meta/ExposureTraits.xlsx"),
                              read = readxl::read_excel(path = !!.x, 
                                                        sheet = "StressorTraitMapping",
                                                        col_types = "guess") %>%
