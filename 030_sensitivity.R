@@ -12,6 +12,7 @@ tar_option_set(
 tars <- yaml::read_yaml("_targets.yaml")
 
 # tar source -------
+tar_source("../envBird/R")
 tar_source()
 
 # targets -------
@@ -20,52 +21,62 @@ pilot_subset <- tar_read(pilot_subset, store = tars$database$store)
 
 tar_plan(
   
+  ## Imputation from multiple dataset with rules ------
+  pilot_subset_selfimpute = self_impute_mammals(pilot_subset),
+  
   ## select cols for sensitivity scoring -------
   tar_target(
     name = sensitivity,
     command = 
-      pilot_subset %>%
+      pilot_subset_selfimpute %>%
       dplyr::select(
         
         ## Names ------
         search_term, common, # Names
         
         ## Climate ------
-        bl_RlEooSmallerOfBreedingAndNonBreedingEoo,
-        rec_stern_dehoedt_2000_minor_simpson,
-        rec_geom_90M_s10e110_simpson, 
-        contains("range_90_10"),
-        contains("q10"),
-        contains("q90"),
+        rec_stern_clim_minor_simpson,
+        rec_geomorphon_simpson, 
+        rec_bioclim_simpson,
+        # contains("range_90_10"),
+        # contains("q10"),
+        # contains("q90"),
         
         ## Habitat ------
-        aub_FeedingHB,
-        aub_BreedingHB,
-        bb_Hb,
-        bl_HB_L1,
-        bl_score_HB_L2,
+        rec_vegstr_simpson,
+        iucn_HB_L1,
+        hc_HB,
         
         ## Diet ------
-        bb_Db,
-        bb_Db_simpson,
+        elt_simpson,
         
         ## Adaptability ------
-        aub_score_anthro_habitat,
-        bl_prop_anthro_total,
-        bl_prop_anthro_max,
         
         ## Constraints------
-        # ID raptors
-        bl_is_raptor, 
+        # Trophic level
+        pan_TrophicLevel,
         
-        # Migratory
-        contains("obligate_migrant"),
+        # Reproduction rate
+        littersize_mean,
+        litterperyear_mean,
         
         # Restricted Range
-        bb_Rr,
+        pan_GR_Area_km2,
         
         # Generation length
-        bl_GenerationLength
+        female_maturity_day_mean,
+        male_maturity_day_mean,
+        
+        # Dependent period
+        gestation_day_mean,
+        weaning_day_mean,
+        
+        # Longevity
+        maxlongevity_mean,
+        
+        # Body weight
+        bodymass_mean
+        
       ) %>% 
       dplyr::mutate(dplyr::across(where(is.numeric),~ round(.x, 2)))
   ),

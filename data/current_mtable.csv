@@ -1,61 +1,40 @@
 search_term,trait,value,data_from
-Amytornis whitei,bb_Rr,1,NA
-Amytornis modestus,bb_ElevationalRange,500,NA
-Amytornis striatus,bb_ElevationalRange,500,NA
-Amytornis whitei,bb_ElevationalRange,500,NA
-Biziura lobata,bb_ElevationalRange,1200,NA
-Neophema elegans,bb_ElevationalRange,1200,NA
-Neophema splendida,bb_ElevationalRange,1200,NA
-Parvipsitta porphyrocephala,bb_ElevationalRange,1000,NA
-Spatula rhynchotis,bb_ElevationalRange,1120,NA
-Stictonetta naevosa,bb_ElevationalRange,300,NA
-Amytornis modestus,bb_NormMin,0,NA
-Amytornis modestus,bb_NormMax,600,NA
-Amytornis striatus,bb_NormMin,0,NA
-Amytornis whitei,bb_NormMax,800,NA
-Neophema elegans,bb_NormMax,400,NA
-Neophema splendida,bb_NormMin,0,NA
-Neophema splendida,bb_NormMax,600,NA
-Parvipsitta porphyrocephala,bb_NormMax,600,NA
-Amytornis modestus,bhv_Territoriality,weak,genus norm
-Ardea plumifera,elt_ForStratWatbelowsurf,0,Mesophoyx intermedia
-Ardea plumifera,elt_ForStratWataroundsurf,80,Mesophoyx intermedia
-Ardea plumifera,elt_ForStratGround,20,Mesophoyx intermedia
-Ardea plumifera,elt_ForStratUnderstory,0,Mesophoyx intermedia
-Ardea plumifera,elt_ForStratMidhigh,0,Mesophoyx intermedia
-Ardea plumifera,elt_ForStratCanopy,0,Mesophoyx intermedia
-Ardea plumifera,elt_ForStratAerial,0,Mesophoyx intermedia
-Ardea plumifera,elt_PelagicSpecialist,0,Mesophoyx intermedia
-Ardea plumifera,bhv_Territoriality,none,Mesophoyx intermedia
-Ardea plumifera,elt_Nocturnal,0,Mesophoyx intermedia
-Calidris acuminata,bhv_Territoriality,weak,"ebird, breeding only"
-Leipoa ocellata,bhv_Territoriality,strong,ebird
-Amytornis modestus,avo_HandWingIndex_mean,6.55,"Amytornis
-purnelli"
-Calidris minuta,bl_RlEooSmallerOfBreedingAndNonBreedingEoo,NA,NA
-Calidris minuta,bl_HB_L1,NA,NA
-Calidris minuta,bl_score_HB_L2,NA,NA
-Calidris minuta,bl_prop_anthro_total,NA,NA
-Calidris minuta,bl_prop_anthro_max,NA,NA
-Calidris minuta,bl_is_raptor,NA,NA
-Calidris minuta,bl_obligate_migrant,NA,NA
-Calidris pugnax,bl_RlEooSmallerOfBreedingAndNonBreedingEoo,NA,NA
-Calidris pugnax,bl_HB_L1,NA,NA
-Calidris pugnax,bl_score_HB_L2,NA,NA
-Calidris pugnax,bl_prop_anthro_total,NA,NA
-Calidris pugnax,bl_prop_anthro_max,NA,NA
-Calidris pugnax,bl_is_raptor,NA,NA
-Calidris pugnax,bl_obligate_migrant,NA,NA
-Cereopsis novaehollandiae,bb_ElevationalRange,NA,NA
-Neophema chrysogaster,bb_ElevationalRange,NA,NA
-Neophema petrophila,bb_ElevationalRange,NA,NA
-Parvipsitta pusilla,bb_ElevationalRange,NA,NA
-Polytelis alexandrae,bb_ElevationalRange,NA,NA
-Polytelis anthopeplus,bb_ElevationalRange,NA,NA
-Ceyx azureus,bhv_Territoriality,strong,Birds of the World
-Polytelis alexandrae,bb_AverageMass,113.4,animaldiversity.org
-Sternula albifrons,bhv_Territoriality,weak,"NSW threatened species, breeding only"
-Thinornis cucullatus,bhv_Territoriality,weak,"Birds of the World, breeding only"
-Synoicus ypsilophora,bhv_Territoriality,NA,NA
-Synoicus ypsilophora,avo_HandWingIndex,NA,NA
-Alectura lathami,bhv_Territoriality,NA,NA
+Acrobates pygmaeus,gestation_day_mean,14,fauna.com.au
+Bettongia lesueur,pan_TrophicLevel,2,Strahan book
+Bettongia penicillata,pan_TrophicLevel,2,Strahan book
+Chalinolobus picatus,pan_TrophicLevel,3,Strahan book
+Chalinolobus picatus,litterperyear_mean,1,Strahan book (C. gouldii)
+Chalinolobus picatus,female_maturity_day_mean,365,AnAge (C. gouldii)
+Chalinolobus picatus,male_maturity_day_mean,NA,Unknown
+Chalinolobus picatus,gestation_day_mean,92,AnAge (C. Gouldii)
+Chalinolobus picatus,weaning_day_mean,60,Strahan book (C. gouldii)
+Chalinolobus picatus,maxlongevity_mean,7.8,AnAge (C. gouldii)
+Hydrurga leptonyx,pan_GR_Area_km2,34454727,IUCN EOO
+Leporillus conditor,litterperyear_mean,2,wildliferesearchmanagement.au
+Nyctophilus corbeni,elt_simpson,0,Nyctophilus timoriensis
+Nyctophilus corbeni,pan_TrophicLevel,3,insectivore bats
+Nyctophilus corbeni,littersize_mean,2,Strahan book (N. geoffroyi)
+Nyctophilus corbeni,litterperyear_mean,1,Strahan book (N. geoffroyi)
+Nyctophilus corbeni,pan_GR_Area_km2,NA,Unknown
+Nyctophilus corbeni,female_maturity_day_mean,326.81,amniota (N. gouldii)
+Nyctophilus corbeni,male_maturity_day_mean,NA,Unknown
+Nyctophilus corbeni,gestation_day_mean,90,Strahan book (N. geoffroyi)
+Nyctophilus corbeni,weaning_day_mean,42,Strahan book (N. geoffroyi)
+Nyctophilus corbeni,maxlongevity_mean,5.9,N. geoffroyi
+Nyctophilus corbeni,bodymass_mean,11.02,N. timoriensis
+Ozimops ridei,weaning_day_mean,42,microbats in general
+Pseudomys australis,pan_TrophicLevel,2,Strahan book
+Pseudomys australis,litterperyear_mean,NA,Unknown
+Saccolaimus flaviventris,pan_TrophicLevel,3,insectivore bats
+Saccolaimus flaviventris,littersize_mean,1,Strahan book (Taphozous geogianus)
+Saccolaimus flaviventris,female_maturity_day_mean,278,AnAge (Taphozous geogianus)
+Saccolaimus flaviventris,male_maturity_day_mean,609,AnAge  book (Taphozous geogianus)
+Saccolaimus flaviventris,gestation_day_mean,99,AnAge  book (Taphozous geogianus)
+Saccolaimus flaviventris,weaning_day_mean,42,amniota (Taphozous geogianus)
+Saccolaimus flaviventris,maxlongevity_mean,5,Strahan book (Taphozous geogianus)
+Sminthopsis psammophila,female_maturity_day_mean,365,Recovery Plan
+Sminthopsis psammophila,male_maturity_day_mean,365,Recovery Plan
+Rattus rattus,pan_GR_Area_km2,134000000,NA
+Oryctolagus cuniculus,common,European rabbit,NA
+Rattus rattus,hc_HB,NA,NA
+Oryctolagus cuniculus,hc_HB,NA,NA

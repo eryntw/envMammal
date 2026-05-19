@@ -1,59 +1,34 @@
 taxa:
-  script: ../envBird/010_taxa.R
-  store: ../../../dev/out/envBird/_targets/taxa
+  script: ../envMammal/010_taxa.R
+  store: ../../../dev/out/envMammal/_targets/taxa
 database:
-  script: ../envBird/020_database.R
-  store: ../../../dev/out/envBird/_targets/database
+  script: ../envMammal/020_database.R
+  store: ../../../dev/out/envMammal/_targets/database
 sensitivity:
-  script: ../envBird/030_sensitivity.R
-  store: ../../../dev/out/envBird/_targets/sensitivity
+  script: ../envMammal/030_sensitivity.R
+  store: ../../../dev/out/envMammal/_targets/sensitivity
 threat:
-  script: ../envBird/040_threat.R
-  store: ../../../dev/out/envBird/_targets/threat
-exposure:
-  script: ../envBird/050_exposure.R
-  store: ../../../dev/out/envBird/_targets/exposure
-coin:
-  script: ../envBird/060_coin.R
-  store: ../../../dev/out/envBird/_targets/coin
-birdcoin:
-  script: ../envBird/070_birdcoin.R
-  store: ../../../dev/out/envBird/_targets/birdcoin
-envCleaned:
-  clean:
-    script: ../envCleaned/010_clean.R
-    store: ../../../dev/out/envCleaned/aus_imcra_prov_dissolve______0__P100Y__sa_br_dissolve/90__90__P1Y__species/clean
-  outliers:
-    script: ../envCleaned/020_outliers.R
-    store: ../../../dev/out/envCleaned/aus_imcra_prov_dissolve______0__P100Y__sa_br_dissolve/90__90__P1Y__species/outliers
-  report_prep:
-    script: ../envCleaned/040_report_prep.R
-    store: ../../../dev/out/envCleaned/aus_imcra_prov_dissolve______0__P100Y__sa_br_dissolve/90__90__P1Y__species/report_prep
-  report:
-    script: ../envCleaned/050_report.R
-    store: ../../../dev/out/envCleaned/aus_imcra_prov_dissolve______0__P100Y__sa_br_dissolve/90__90__P1Y__species/report
-envPIA:
-  setup:
-    script: ../envPIA/010_setup.R
-    store: ../../../dev/out/envPIA/aus_imcra_prov_dissolve______0__P50Y__sa_br_dissolve/90__90__P1Y__species/setup
-  clean:
-    script: ../envPIA/020_clean.R
-    store: ../../../dev/out/envPIA/aus_imcra_prov_dissolve______0__P50Y__sa_br_dissolve/90__90__P1Y__species/clean
-  aoi_taxa:
-    script: ../envPIA/030_aoi_taxa.R
-    store: ../../../dev/out/envPIA/aus_imcra_prov_dissolve______0__P50Y__sa_br_dissolve/90__90__P1Y__species/aoi_taxa
-  concern:
-    script: ../envPIA/040_concern.R
-    store: ../../../dev/out/envPIA/aus_imcra_prov_dissolve______0__P50Y__sa_br_dissolve/90__90__P1Y__species/concern
-  final:
-    script: ../envPIA/050_final.R
-    store: ../../../dev/out/envPIA/aus_imcra_prov_dissolve______0__P50Y__sa_br_dissolve/90__90__P1Y__species/final
-  summarise:
-    script: ../envPIA/060_summarise.R
-    store: ../../../dev/out/envPIA/aus_imcra_prov_dissolve______0__P50Y__sa_br_dissolve/90__90__P1Y__species/summarise
-  report_prep:
-    script: ../envPIA/070_report_prep.R
-    store: ../../../dev/out/envPIA/aus_imcra_prov_dissolve______0__P50Y__sa_br_dissolve/90__90__P1Y__species/report_prep
-  report:
-    script: ../envPIA/080_report.R
-    store: ../../../dev/out/envPIA/aus_imcra_prov_dissolve______0__P50Y__sa_br_dissolve/90__90__P1Y__species/report
+  script: ../envMammal/040_threat.R
+  store: ../../../dev/out/envMammal/_targets/threat
+envBird:
+  taxa:
+    script: ../envBird/010_taxa.R
+    store: ../../../dev/out/envBird/_targets/taxa
+  database:
+    script: ../envBird/020_database.R
+    store: ../../../dev/out/envBird/_targets/database
+  sensitivity:
+    script: ../envBird/030_sensitivity.R
+    store: ../../../dev/out/envBird/_targets/sensitivity
+  threat:
+    script: ../envBird/040_threat.R
+    store: ../../../dev/out/envBird/_targets/threat
+  exposure:
+    script: ../envBird/050_exposure.R
+    store: ../../../dev/out/envBird/_targets/exposure
+  coin:
+    script: ../envBird/060_coin.R
+    store: ../../../dev/out/envBird/_targets/coin
+  birdcoin:
+    script: ../envBird/070_birdcoin.R
+    store: ../../../dev/out/envBird/_targets/birdcoin

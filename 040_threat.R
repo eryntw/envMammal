@@ -12,6 +12,7 @@ tars <- yaml::read_yaml("_targets.yaml")
 
 # tar source -------
 tar_source()
+tar_source("../envBird/R")
 
 # targets -------
 
@@ -23,8 +24,8 @@ tar_plan(
   api = Sys.getenv("IUCN_REDLIST_KEY"),
   
   ## Get IUCN data for pilot_subset -------
-  tar_target(name = iucn_data,
-             command = get_iucn_species_data(pilot_subset, api = iucnredlist::init_api(api))
+  targets::tar_target(name = iucn_data,
+                      command = map_iucn_data(pilot_subset, api = iucnredlist::init_api(api))
   ),
   
   ## Extract threats ------
