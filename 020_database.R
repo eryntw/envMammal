@@ -14,7 +14,6 @@ tar_source("../envBird/R")
 
 splist <- tar_read(splist, store = tars$taxa$store)
 sa_mammals <- tar_read(sa_mammals, store = tars$taxa$store)
-dbdir <- "/mnt/envshare/data/traits/raw/bird"
 
 tar_plan(
   
@@ -91,24 +90,23 @@ tar_plan(
   ),
   
   ## Habitat coding 
-  tar_target(name = habitatcoding,
-             command = readxl::read_excel(
-               "/mnt/envshare/data/traits/meta/HabitatCoding.xlsx"
-             ) %>% 
-               tibble::column_to_rownames("ausbird_habitat") %>%  
-               t() %>%                                         
-               tibble::as_tibble(rownames = "search_term") %>%
-               dplyr::mutate(dplyr::across(where(\(x) is.character(x) && 
-                                                   all(x %in% c("0", "1"))),
-                                           as.integer)) %>%
-               dplyr::mutate(HB = rowSums(dplyr::pick(where(is.numeric)), na.rm = TRUE)) %>% 
-               dplyr::mutate(
-                 `Special requirement` = dplyr::if_else(
-                   `Special requirement` == "none", 0L, 1L),
-                 `Cryptic species` = dplyr::if_else(
-                   `Cryptic species` == "yes",  1L, 0L)) %>% 
-               clean_taxa_df(taxacol = search_term)
-             
+  tarchetypes::tar_file_read(name = habitatcoding,
+                             command = fs::path("/mnt/envshare/data/traits/meta/HabitatCoding.xlsx") 
+                             read = readxl::read_excel(!!.x) %>% 
+                               tibble::column_to_rownames("ausbird_habitat") %>%  
+                               t() %>%                                         
+                               tibble::as_tibble(rownames = "search_term") %>%
+                               dplyr::mutate(dplyr::across(where(\(x) is.character(x) && 
+                                                                   all(x %in% c("0", "1"))),
+                                                           as.integer)) %>%
+                               dplyr::mutate(HB = rowSums(dplyr::pick(where(is.numeric)), na.rm = TRUE)) %>% 
+                               dplyr::mutate(
+                                 `Special requirement` = dplyr::if_else(
+                                   `Special requirement` == "none", 0L, 1L),
+                                 `Cryptic species` = dplyr::if_else(
+                                   `Cryptic species` == "yes",  1L, 0L)) %>% 
+                               clean_taxa_df(taxacol = search_term)
+                             
   ),
 
   ## Match database species using synonym database -------
@@ -116,7 +114,7 @@ tar_plan(
              command = match_synonym(splist$search_term)
   ),
   
-  ## join database: sa_birds -------
+  ## join database: sa_mammals -------
   tar_target(name = joined_table,
              command = sa_mammals %>%
                join_database_(summary_df, prefix = "rec_", syn_db = syn_db) %>%  
